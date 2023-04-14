@@ -4,8 +4,7 @@ import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
@@ -14,33 +13,34 @@ import java.util.UUID;
 @Entity
 public class Feriado {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
     @NotNull
-    private UUID idFeriado;
-
-    @Column
-    @NotNull
-    private String descripcion;
+    private UUID holidayId;
 
     @Column
     @NotNull
-    private Date fecha;
+    private String description;
 
     @Column
     @NotNull
-    private Date fechaCreada;
+    private Date date;
 
     @Column
     @NotNull
-    private String creadoPor;
+    private Date createdDate;
 
     @Column
-    private Date fechaActualizada;
+    @NotNull
+    private String createdBy;
 
     @Column
-    private String actualizadoPor;
+    private Date updatedDate;
+
+    @Column
+    private String updatedBy;
 
     //no hay ninguna relacion asi que en este no va nada :P
-
 
 }
