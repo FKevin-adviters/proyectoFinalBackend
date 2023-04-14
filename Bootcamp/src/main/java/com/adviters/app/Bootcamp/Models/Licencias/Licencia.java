@@ -3,11 +3,14 @@ package com.adviters.app.Bootcamp.Models.Licencias;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.NonNull;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 
@@ -17,38 +20,38 @@ public class Licencia {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
     @NonNull
-    private UUID idLicencia;
-
-    //aca irian tres Columns que vienen de las relaciones
+    private UUID licenseId;
 
     @Column
     @NotNull
-    private Date fechaInicio;
+    private Date startDate;
 
     @Column
     @NotNull
-    private Date fechaFin;
+    private Date endDate;
 
     @Column
     @NotNull
-    private Integer diasDisponibles;
+    private Integer availableDays;
 
     @Column
-    private String documentacion;
+    private String documentation;
+
+    @Column(updatable = false)
+    @NotNull
+    @CreationTimestamp
+    private Timestamp createdDate;
 
     @Column
     @NotNull
-    private Date fechaCreada;
+    private String createdBy;
 
     @Column
-    @NotNull
-    private String creadaPor;
+    @UpdateTimestamp
+    private Timestamp updatedDate;
 
     @Column
-    private Date fechaActualizada;
-
-    @Column
-    private String actualizadaPor;
+    private String updatedBy;
 
     //aca va la relacion
 

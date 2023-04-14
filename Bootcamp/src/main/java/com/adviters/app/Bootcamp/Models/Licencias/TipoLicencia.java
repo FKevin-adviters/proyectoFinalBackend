@@ -14,33 +14,34 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 public class TipoLicencia {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
     @NonNull
-    private UUID idLicencia;
+    private UUID licenseId;
 
     @Column
     @NotNull
-    private String descripcion;
+    private String description;
 
     @Column
     @NotNull
-    private Boolean docRequerida;
+    private Boolean documentRequired;
 
     @Column
     @NotNull
-    private Date fechaCreacion;
+    private Date creationDate;
 
     @Column
     @NotNull
-    private String creadoPor;
+    private String createdBy;
 
     @Column
-    private Date fechaActualizacion;
+    private Date updateDate;
 
     @Column
-    private String actualizadoPor;
+    private String updatedBy;
 
     //aca va la relacion
 }
