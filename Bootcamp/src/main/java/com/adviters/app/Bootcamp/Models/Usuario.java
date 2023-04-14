@@ -1,5 +1,6 @@
 package com.adviters.app.Bootcamp.Models;
 
+import com.sun.istack.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -61,7 +62,8 @@ public class Usuario {
     private String profile_picture;
 
     //poner conexion con rol_id
-
+    @OneToMany
+    private List<Usuario> idLicencia;
 
     @Column
     @NonNull
@@ -72,7 +74,7 @@ public class Usuario {
     private Integer available_days;
 
     @Column
-    @NonNull
+    @NotNull
     private Boolean supervisor;
 
     //este campo deberíamos poner el id del usuario que lo creo que
