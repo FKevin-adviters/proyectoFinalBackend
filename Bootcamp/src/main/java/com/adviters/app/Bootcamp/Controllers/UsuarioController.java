@@ -1,5 +1,6 @@
 package com.adviters.app.Bootcamp.Controllers;
 
+import com.adviters.app.Bootcamp.Models.Rol;
 import com.adviters.app.Bootcamp.Models.Usuario;
 import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class UsuarioController {
     }
     @GetMapping(value = "/usuario/{id}")
     public Usuario getUsuarioById(@PathVariable UUID id){
-        Usuario user = usuarioRepository.getById(id);
+        Usuario user = usuarioRepository.findById(id).get();
         return user;
     }
     @PostMapping(value = "/usuario")
@@ -32,7 +33,7 @@ public class UsuarioController {
            Usuario _user = usuarioRepository.save(usuario);
                    return new ResponseEntity<>(usuario, HttpStatus.CREATED);
        } catch (Exception e) {
-            return new ResponseEntity<>("Error", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
        }
     }
 }
