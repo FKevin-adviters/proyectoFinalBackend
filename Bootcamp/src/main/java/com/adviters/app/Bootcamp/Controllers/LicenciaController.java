@@ -20,5 +20,4 @@ public class LicenciaController {
     public String getLicencia(){
         return "licenciaCreada";
     }
-
 }

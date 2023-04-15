@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-@Entity
 @AllArgsConstructor
+@Entity
 public class Rol {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

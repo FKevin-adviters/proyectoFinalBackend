@@ -1,11 +1,8 @@
 package com.adviters.app.Bootcamp.Models;
-
-import com.sun.istack.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -18,8 +15,6 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter
-    @NonNull
     private UUID id;
 
     @Column
@@ -30,7 +25,7 @@ public class Usuario {
     @NonNull
     private String lastname;
 
-    @Column(precision = 15)
+    @Column
     @NonNull
     private Integer phone;
 
@@ -40,6 +35,7 @@ public class Usuario {
 
     @Column
     @NonNull
+    @Lob
     private String password;
 
     @Column
@@ -62,8 +58,10 @@ public class Usuario {
     private String profile_picture;
 
     //poner conexion con rol_id
-    @OneToMany
-    private List<Usuario> idLicencia;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role_id")
+    private List<String> roles;
 
     @Column
     @NonNull
@@ -73,21 +71,14 @@ public class Usuario {
     @NonNull
     private Integer available_days;
 
-    @Column
-    @NotNull
-    private Boolean supervisor;
-
     //este campo deberíamos poner el id del usuario que lo creo que
     //que dicho id va a ser enviado por el front
-    @Column
-    @NonNull
-    private UUID createdBy;
-
     @CreatedDate
     @Column
     private Date createdAt;
 
-    @Column
-    @NonNull
-    private Boolean isDisabled;
+    public Usuario() {
+    }
+
+
 }

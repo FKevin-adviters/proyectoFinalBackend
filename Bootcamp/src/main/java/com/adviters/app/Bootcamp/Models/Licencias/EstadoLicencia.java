@@ -14,6 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 public class EstadoLicencia {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter

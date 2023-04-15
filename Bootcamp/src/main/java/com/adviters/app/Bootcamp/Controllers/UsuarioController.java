@@ -3,6 +3,7 @@ package com.adviters.app.Bootcamp.Controllers;
 import com.adviters.app.Bootcamp.Models.Rol;
 import com.adviters.app.Bootcamp.Models.Usuario;
 import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
+import com.adviters.app.Bootcamp.Services.UsuarioServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,9 @@ public class UsuarioController {
     @Autowired
     UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private UsuarioServices services;
+
     @GetMapping(value = "/usuario")
     public ResponseEntity<List<Usuario>> getUsuario(){
         List<Usuario> list = usuarioRepository.findAll();
@@ -28,12 +32,17 @@ public class UsuarioController {
         return user;
     }
     @PostMapping(value = "/usuario")
-    public ResponseEntity saveDiciplina(@RequestBody Usuario usuario){
+    public ResponseEntity setUsuario(@RequestBody Usuario usuario){
        try{
-           Usuario _user = usuarioRepository.save(usuario);
-                   return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+           if(services.checkUser(usuario)) {
+               services.createUser(usuario);
+               return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+           } else {
+               throw new Exception("El usuario no cumple con los campos necesarios: " + usuario);
+           }
+
        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage() + " Causa: " + e.getCause(), HttpStatus.INTERNAL_SERVER_ERROR);
        }
     }
 }

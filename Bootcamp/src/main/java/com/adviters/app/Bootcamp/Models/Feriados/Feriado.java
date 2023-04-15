@@ -3,6 +3,7 @@ package com.adviters.app.Bootcamp.Models.Feriados;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;

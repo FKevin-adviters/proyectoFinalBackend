@@ -1,19 +1,20 @@
 package com.adviters.app.Bootcamp.Models.Licencias;
 
-import com.sun.istack.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 
+@Data
+@Entity
+@AllArgsConstructor
 public class Licencia {
 
     @Id
@@ -23,27 +24,27 @@ public class Licencia {
     private UUID licenseId;
 
     @Column
-    @NotNull
+    @NonNull
     private Date startDate;
 
     @Column
-    @NotNull
+    @NonNull
     private Date endDate;
 
     @Column
-    @NotNull
+    @NonNull
     private Integer availableDays;
 
     @Column
     private String documentation;
 
     @Column(updatable = false)
-    @NotNull
+    @NonNull
     @CreationTimestamp
     private Timestamp createdDate;
 
     @Column
-    @NotNull
+    @NonNull
     private String createdBy;
 
     @Column

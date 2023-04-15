@@ -15,7 +15,7 @@ public class FeriadoController {
     @Autowired
     private FeriadoRepository feriadoRepository;
 
-    @PostMapping
+    @PostMapping(value = "/feriado")
     public ResponseEntity<Feriado> createFeriado(@RequestBody Feriado feriado) {
         try {
             Feriado savedFeriado = feriadoRepository.save(feriado);
