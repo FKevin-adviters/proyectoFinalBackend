@@ -68,4 +68,7 @@ public class Licencia {
     @JoinColumn(name = "license_user")
     private Usuario usuario;
 
+    public Licencia() {
+
+    }
 }
