@@ -62,4 +62,7 @@ public class Licencia {
     @ManyToOne
     private Usuario usuario;
 
+    public Licencia() {
+
+    }
 }
