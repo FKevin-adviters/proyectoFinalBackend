@@ -1,19 +1,20 @@
 package com.adviters.app.Bootcamp.Models.Licencias;
 
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @Entity
 public class TipoLicencia {
+    //Los tipos de licencias que van a haber van a ser:
+    //"Dia de Estudio", "Vacaciones", "Tramites" y "Licencia Medica"
+    //van a tener una relación de "uno a muchos" con las licencias
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,26 +23,9 @@ public class TipoLicencia {
     private UUID licenseId;
 
     @Column
-    @NotNull
-    private String description;
-
-    @Column
-    @NotNull
-    private Boolean documentRequired;
-
-    @Column
-    @NotNull
-    private Date creationDate;
-
-    @Column
-    @NotNull
-    private String createdBy;
-
-    @Column
-    private Date updateDate;
-
-    @Column
-    private String updatedBy;
+    @NonNull
+    private String name;
 
     //aca va la relacion
+
 }

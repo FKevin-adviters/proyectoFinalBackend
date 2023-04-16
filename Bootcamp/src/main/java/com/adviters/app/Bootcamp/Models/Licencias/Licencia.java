@@ -1,5 +1,6 @@
 package com.adviters.app.Bootcamp.Models.Licencias;
 
+import com.adviters.app.Bootcamp.Models.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -55,7 +56,10 @@ public class Licencia {
     private String updatedBy;
 
     //aca va la relacion
+    @ManyToOne
+    private TipoLicencia tipoLicencia;
 
-
+    @ManyToOne
+    private Usuario usuario;
 
 }

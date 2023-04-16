@@ -35,7 +35,6 @@ public class Usuario {
 
     @Column
     @NonNull
-    @Lob
     private String password;
 
     @Column
@@ -54,7 +53,6 @@ public class Usuario {
     private String country;
 
     @Column
-    @Lob
     private String profile_picture;
 
     //poner conexion con rol_id
@@ -71,8 +69,9 @@ public class Usuario {
     @NonNull
     private Integer available_days;
 
-    //este campo deberíamos poner el id del usuario que lo creo que
-    //que dicho id va a ser enviado por el front
+    @Column
+    private UUID created_by;
+
     @CreatedDate
     @Column
     private Date createdAt;

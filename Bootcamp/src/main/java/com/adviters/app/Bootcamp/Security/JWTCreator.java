@@ -1,6 +1,8 @@
 package com.adviters.app.Bootcamp.Security;
 
 import io.jsonwebtoken.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,18 +19,21 @@ public class JWTCreator {
                 .claim(ROLES_AUTHORITIES, checkRoles(jwtObject.getRoles()))
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
-        return prefix + " " + token;
+        return prefix + token;
     }
     public static JWTObject create(String token,String prefix,String key)
             throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException {
-        JWTObject object = new JWTObject();
-        token = token.replace(prefix, "");
-        Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
-        object.setSubject(claims.getSubject());
-        object.setExpiration(claims.getExpiration());
-        object.setIssuedAt(claims.getIssuedAt());
-        object.setRoles((List<String>) claims.get(ROLES_AUTHORITIES));
-        return object;
+
+            JWTObject object = new JWTObject();
+            token = token.replace(prefix, "");
+            Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+            object.setSubject(claims.getSubject());
+            object.setExpiration(claims.getExpiration());
+            object.setIssuedAt(claims.getIssuedAt());
+            object.setRoles((List<String>) claims.get(ROLES_AUTHORITIES));
+            return object;
+
+
 
     }
 

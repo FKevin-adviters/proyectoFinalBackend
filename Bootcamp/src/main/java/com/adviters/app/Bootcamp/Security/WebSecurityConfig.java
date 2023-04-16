@@ -39,13 +39,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(new JWTFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(SWAGGER_WHITELIST).permitAll()
-                .antMatchers(HttpMethod.POST,"/login").permitAll()
-                .antMatchers(HttpMethod.GET,"/").permitAll()
-                .antMatchers(HttpMethod.POST,"/logout").authenticated()
-                .antMatchers(HttpMethod.POST,"/usuario").permitAll()
-                .antMatchers(HttpMethod.GET,"/licencias").hasAnyRole("USUARIO","SUPERVISOR")
-                .antMatchers(HttpMethod.GET,"/licencias/{id}").hasAnyRole("SUPERVISOR")
-                .antMatchers(HttpMethod.POST,"/licencias").hasAnyRole("SUPERVISOR")
+                .antMatchers(HttpMethod.POST,"/api/login").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/logout").authenticated()
+                .antMatchers(HttpMethod.POST,"/api/usuario").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/licencias").hasAnyRole("SUPERVISOR")
+                .antMatchers(HttpMethod.GET,"/api/licencias/{id}").hasAnyRole("SUPERVISOR", "USUARIO") //si el rol es "USUARIO" se
+                // debe enviar solo sus licencias.
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

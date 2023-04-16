@@ -14,6 +14,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 public class EstadoLicencia {
+    //Van a haber tres tipos de estados: "aprobado", "pendiente" y "rechazado".
+    //Estas van a tener una relacion de uno a muchos con las licencias.
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,23 +26,6 @@ public class EstadoLicencia {
     @Column
     @NotNull
     private String description;
-
-    @Column
-    @NotNull
-    private Date creationDate;
-
-    @Column
-    @NotNull
-    private String createdBy;
-
-    @Column
-    private Date updateDate;
-
-    @Column
-    private String updatedBy;
-
-    @Column
-    private Boolean status;
 
     //aca va la relacion
 

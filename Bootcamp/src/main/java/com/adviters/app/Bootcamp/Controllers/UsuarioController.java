@@ -1,6 +1,5 @@
 package com.adviters.app.Bootcamp.Controllers;
 
-import com.adviters.app.Bootcamp.Models.Rol;
 import com.adviters.app.Bootcamp.Models.Usuario;
 import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
 import com.adviters.app.Bootcamp.Services.UsuarioServices;
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-
+@RequestMapping("/api")
 public class UsuarioController {
     @Autowired
     UsuarioRepository usuarioRepository;
@@ -42,7 +41,7 @@ public class UsuarioController {
            }
 
        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage() + " Causa: " + e.getCause(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage() + "\n Causa: " + e.getCause(), HttpStatus.INTERNAL_SERVER_ERROR);
        }
     }
 }

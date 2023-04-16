@@ -5,6 +5,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,7 +47,6 @@ public class JWTFilter extends OncePerRequestFilter {
         }catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException e) {
             e.printStackTrace();
             response.setStatus(HttpStatus.FORBIDDEN.value());
-            return;
         }
     }
 

@@ -12,16 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.Optional;
 
 @RestController
 @Transactional
+@RequestMapping("/api")
 public class AuthController {
     @Autowired
 
@@ -35,7 +33,7 @@ public class AuthController {
 
     @GetMapping
     public String welcome(){
-        return "Welcome to My Spring Boot Web API";
+        return "Bienvenido a la api de Liberty";
     }
     @PostMapping("/login")
     public Sesion login(@RequestBody Login login) {
@@ -54,6 +52,7 @@ public class AuthController {
                     jwtObject.setExpiration((new Date(System.currentTimeMillis() + securityConfig.EXPIRATION) ));
                     jwtObject.setRoles(user.getRoles());
                     sesion.setToken(JWTCreator.createToken(SecurityConfig.PREFIX, SecurityConfig.KEY, jwtObject));
+                    sesion.setUser(user);
                     return sesion;
             } else {
                 throw new RuntimeException("Correo no existente");
