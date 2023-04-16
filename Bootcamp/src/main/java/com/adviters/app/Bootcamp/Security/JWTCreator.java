@@ -32,9 +32,6 @@ public class JWTCreator {
             object.setIssuedAt(claims.getIssuedAt());
             object.setRoles((List<String>) claims.get(ROLES_AUTHORITIES));
             return object;
-
-
-
     }
 
     private static List<String> checkRoles(List<String> roles) {

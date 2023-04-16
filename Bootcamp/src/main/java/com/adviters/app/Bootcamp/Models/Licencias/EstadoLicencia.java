@@ -1,5 +1,6 @@
 package com.adviters.app.Bootcamp.Models.Licencias;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +8,8 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.UUID;
+import java.util.List;
+
 
 @Data
 @AllArgsConstructor
@@ -21,13 +22,15 @@ public class EstadoLicencia {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
     @NonNull
-    private UUID idState;
+    private Long idState;
 
     @Column
     @NotNull
     private String description;
 
     //aca va la relacion
-
+    @JsonIgnore
+    @OneToMany(mappedBy = "estadoLicencia")
+    private List<Licencia> licencias;
 
 }

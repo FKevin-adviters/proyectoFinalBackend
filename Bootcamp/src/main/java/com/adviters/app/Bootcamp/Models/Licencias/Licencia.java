@@ -22,7 +22,7 @@ public class Licencia {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
     @NonNull
-    private UUID licenseId;
+    private Long licenseId;
 
     @Column
     @NonNull
@@ -57,9 +57,15 @@ public class Licencia {
 
     //aca va la relacion
     @ManyToOne
+    @JoinColumn(name = "license_type")
     private TipoLicencia tipoLicencia;
 
     @ManyToOne
+    @JoinColumn(name = "license_state")
+    private EstadoLicencia estadoLicencia;
+
+    @ManyToOne
+    @JoinColumn(name = "license_user")
     private Usuario usuario;
 
 }

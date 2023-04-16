@@ -5,7 +5,6 @@ import com.adviters.app.Bootcamp.Models.Usuario;
 public class Sesion {
     private String login;
     private String token;
-
     private Usuario user;
 
     public String getLogin() {

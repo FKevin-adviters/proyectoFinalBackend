@@ -38,13 +38,33 @@ public class Usuario {
     private String password;
 
     @Column
+    @NonNull
+    private Long dni;
+
+    @Column
+    @NonNull
+    private Long cuil;
+
+    @Column
     private String street;
+
+    @Column
+    private Integer floor_number;
+
+    @Column
+    private String tower;
 
     @Column
     private Integer street_number;
 
     @Column
+    private Integer postal_code;
+
+    @Column
     private String town;
+
+    @Column
+    private String apartment;
 
     @Column
     private String state;

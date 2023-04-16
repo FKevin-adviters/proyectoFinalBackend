@@ -41,6 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(SWAGGER_WHITELIST).permitAll()
                 .antMatchers(HttpMethod.POST,"/api/login").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/token").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/logout").authenticated()
                 .antMatchers(HttpMethod.POST,"/api/usuario").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/licencias").hasAnyRole("SUPERVISOR")
