@@ -33,4 +33,9 @@ public class EstadoLicencia {
     @OneToMany(mappedBy = "estadoLicencia")
     private List<Licencia> licencias;
 
+    public EstadoLicencia() {
+
+    }
 }
+
+

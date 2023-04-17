@@ -1,12 +1,14 @@
 package com.adviters.app.Bootcamp.Models.Licencias;
 
 import com.adviters.app.Bootcamp.Models.Usuario;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -15,6 +17,7 @@ import java.util.UUID;
 
 @Data
 @Entity
+@Table
 @AllArgsConstructor
 public class Licencia {
 
@@ -41,31 +44,31 @@ public class Licencia {
 
     @Column(updatable = false)
     @NonNull
-    @CreationTimestamp
-    private Timestamp createdDate;
+    @CreatedDate
+    private Date createdDate;
 
     @Column
     @NonNull
-    private String createdBy;
+    private UUID createdBy;
 
     @Column
-    @UpdateTimestamp
-    private Timestamp updatedDate;
+    private Date updatedDate;
 
     @Column
-    private String updatedBy;
+    private UUID updatedBy;
 
     //aca va la relacion
+
     @ManyToOne
-    @JoinColumn(name = "license_type")
+    @JoinColumn(name = "license_type", referencedColumnName = "licenseId")
     private TipoLicencia tipoLicencia;
 
     @ManyToOne
-    @JoinColumn(name = "license_state")
+    @JoinColumn(name = "license_state", referencedColumnName = "idState")
     private EstadoLicencia estadoLicencia;
 
     @ManyToOne
-    @JoinColumn(name = "license_user")
+    @JoinColumn(name = "license_user", referencedColumnName = "id")
     private Usuario usuario;
 
     public Licencia() {

@@ -1,7 +1,6 @@
 package com.adviters.app.Bootcamp.Repositories;
 
 import com.adviters.app.Bootcamp.Models.Usuario;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,6 +30,11 @@ relacionados con él cargados en una sola consulta, filtrando los resultados por
 correo electrónico proporcionado como parámetro.*/
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, UUID> {
+    Optional<Usuario> findById(UUID id);
+
     @Query("SELECT e FROM Usuario e JOIN FETCH e.roles WHERE e.email= (:email)")
     Usuario findByEmail(@Param("email") String email);
+
+
+
 }

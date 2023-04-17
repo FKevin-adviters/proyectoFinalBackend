@@ -27,4 +27,8 @@ public class TipoLicencia {
     @Column
     @NonNull
     private String name;
+
+    public TipoLicencia() {
+
+    }
 }
