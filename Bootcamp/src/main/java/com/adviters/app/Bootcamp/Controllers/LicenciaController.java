@@ -48,7 +48,7 @@ public class LicenciaController {
     }
 
     // Definimos un endpoint GET para obtener una licencia en particular según su id
-    @GetMapping(value = "/licencia/{licenciaId}")
+    @GetMapping(value = "/licencia/{licenciaId}/usuario/{usuarioId}")
     public ResponseEntity<?> getLicenciaById(@PathVariable Long licenciaId) {
         try {
             // Buscamos la licencia en la base de datos usando el método findById() de LicenciaRepository

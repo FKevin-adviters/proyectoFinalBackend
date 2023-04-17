@@ -73,6 +73,7 @@ public class Usuario {
     private String country;
 
     @Column
+    @Lob
     private String profile_picture;
 
     //poner conexion con rol_id
@@ -88,10 +89,6 @@ public class Usuario {
     @Column
     @NonNull
     private Integer available_days;
-
-    @Column
-    private UUID created_by;
-
     @CreatedDate
     @Column
     private Date createdAt;
