@@ -1,9 +1,12 @@
 package com.adviters.app.Bootcamp.Services;
 
 import com.adviters.app.Bootcamp.Controllers.UsuarioDTOS.UsuarioRolDTO;
+import com.adviters.app.Bootcamp.Controllers.UsuarioDTOS.UsuarioSupervisedBy;
 import com.adviters.app.Bootcamp.Models.Usuario;
 import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,9 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import javax.persistence.Query;
+import java.util.*;
 
 @Service
 @Transactional
@@ -22,6 +24,9 @@ public class UsuarioServices {
     private UsuarioRepository repository;
     @Autowired
     private PasswordEncoder encoder;
+
+
+    private static final Logger logger = LoggerFactory.getLogger("Liberty");
 
 
     @PersistenceContext
@@ -39,14 +44,58 @@ public class UsuarioServices {
         }
     }
 
-    public List<UsuarioRolDTO> getUsuariosByRol() {
-        List<UsuarioRolDTO> list = (List<UsuarioRolDTO>) repository.findAll().stream().map(user -> {
+    public HashMap<String, List<UsuarioRolDTO>> getUsuariosByRol()  {
+        Query query = entityManager.createQuery("SELECT e FROM Usuario e JOIN FETCH e.roles", Usuario.class);
+
+        List<Usuario> usuarioList = query.getResultList();
+        List<UsuarioRolDTO> dtoListSupervisores = new ArrayList<>();
+        List<UsuarioRolDTO> dtoListUsuarios = new ArrayList<>();
+        HashMap<String, List<UsuarioRolDTO>> usuarios = new HashMap<String, List<UsuarioRolDTO>>();
+
+        for (Usuario user : usuarioList) {
             UsuarioRolDTO dto = new UsuarioRolDTO();
             dto.setId(user.getId());
             dto.setName(user.getName());
-            dto.setSupervisor(user.getRoles().get(0).equals("SUPERVISOR"));
-            return dto;
-        });
-        return list;
-    };
+            dto.setRoles(user.getRoles());
+            if(user.getRoles().contains("SUPERVISOR")){
+                dtoListSupervisores.add(dto);
+            } else {
+                dtoListUsuarios.add(dto);
+            }
+        }
+        usuarios.put("supervisores", dtoListSupervisores);
+        usuarios.put("usuarios", dtoListUsuarios);
+        return usuarios;
+    }
+
+    public List<UsuarioSupervisedBy> getSupervisedUsersById (UUID id) {
+        Query query = entityManager.createQuery("SELECT e FROM Usuario e JOIN FETCH e.roles WHERE e.supervisorId = :supervisorId", Usuario.class);
+        query.setParameter("supervisorId", id);
+        List<Usuario> userList = query.getResultList();
+        List<UsuarioSupervisedBy> userDTOList = new ArrayList<>();
+        for (Usuario user: userList) {
+            UsuarioSupervisedBy dto = new UsuarioSupervisedBy();
+            dto.setId(user.getId());
+            dto.setName(user.getName());
+            dto.setLastname(user.getLastname());
+            dto.setProfile_picture(user.getProfile_picture());
+            userDTOList.add(dto);
+        }
+        return userDTOList;
+    }
+
+    public Boolean checkIfSupervisor (UUID id) throws Exception {
+        try{
+            Query query = entityManager.createQuery("SELECT e FROM Usuario e JOIN FETCH e.roles WHERE e.id = :userId", Usuario.class);
+            query.setParameter("userId", id);
+            Usuario usuario = (Usuario) query.getSingleResult();
+            if(usuario != null) {
+                return usuario.getRoles().contains("SUPERVISOR");
+            } else {
+                throw new Exception("No se ha encontrado el usuario solicitado");
+            }
+        } catch(Exception e) {
+            throw new Exception("Ha ocurrido un error: " + e.getMessage());
+        }
+    }
 }

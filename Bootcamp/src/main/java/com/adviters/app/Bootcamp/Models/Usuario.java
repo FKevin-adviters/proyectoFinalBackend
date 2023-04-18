@@ -94,6 +94,9 @@ public class Usuario {
     @Column
     private Date createdAt;
 
+    @Column
+    private UUID supervisorId;
+
     public Usuario() {
     }
 

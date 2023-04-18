@@ -44,6 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/api/token").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/logout").authenticated()
                 .antMatchers(HttpMethod.POST,"/api/usuario").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/usuario/roles").authenticated()
                 .antMatchers(HttpMethod.GET,"/api/licencias").hasAnyRole("SUPERVISOR")
                 .antMatchers(HttpMethod.GET,"/api/licencias/{id}").hasAnyRole("SUPERVISOR", "USUARIO") //si el rol es "USUARIO" se
                 // debe enviar solo sus licencias.
