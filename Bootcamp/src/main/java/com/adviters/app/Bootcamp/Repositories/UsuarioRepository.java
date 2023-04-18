@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 /*Esta anotación @Query se utiliza en JPA (Java Persistence API) para
@@ -33,4 +34,7 @@ correo electrónico proporcionado como parámetro.*/
 public interface UsuarioRepository extends JpaRepository<Usuario, UUID> {
     @Query("SELECT e FROM Usuario e JOIN FETCH e.roles WHERE e.email= (:email)")
     Usuario findByEmail(@Param("email") String email);
+    @Query("SELECT e FROM Usuario e JOIN FETCH e.roles WHERE e.email= (:email)")
+    Usuario findByRol(@Param("rol") String rol);
+
 }

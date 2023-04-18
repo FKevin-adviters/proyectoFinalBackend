@@ -7,11 +7,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
-@Entity
+    @Data
+    @AllArgsConstructor
+    @Entity
 public class Usuario {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
