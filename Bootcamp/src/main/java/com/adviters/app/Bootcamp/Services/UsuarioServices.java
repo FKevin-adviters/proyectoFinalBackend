@@ -1,5 +1,6 @@
 package com.adviters.app.Bootcamp.Services;
 
+import com.adviters.app.Bootcamp.Models.Licencias.Licencia;
 import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioRolDTO;
 import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioSupervisedBy;
 import com.adviters.app.Bootcamp.Models.Usuario;
@@ -18,7 +19,6 @@ import javax.persistence.Query;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -31,6 +31,10 @@ public class UsuarioServices {
     private static final Logger logger = LoggerFactory.getLogger("Liberty");
     @PersistenceContext
     private EntityManager entityManager; //esto va a servir para dsp sin necesitamos consultas especificas
+
+    public UsuarioServices() {
+    }
+
     public void createUser(Usuario user) throws RuntimeException{
         try {
             String pass = user.getPassword();
@@ -81,6 +85,7 @@ public class UsuarioServices {
         }
         return userDTOList;
     }
+
     public Boolean checkIfSupervisor (UUID id) throws Exception {
         try{
             Query query = entityManager.createQuery("SELECT e FROM Usuario e JOIN FETCH e.roles WHERE e.id = :userId", Usuario.class);
@@ -95,7 +100,8 @@ public class UsuarioServices {
             throw new Exception("Ha ocurrido un error: " + e.getMessage());
         }
     }
-    public static Boolean checkIfMayorEdad(Date fecha) {
+
+    public Boolean checkIfMayorEdad(Date fecha) {
         LocalDate fechaToLocalDate =  LocalDate.parse( new SimpleDateFormat("yyyy-MM-dd").format(fecha));
         LocalDate ahora = LocalDate.now();
         Period periodo = Period.between(fechaToLocalDate, ahora);

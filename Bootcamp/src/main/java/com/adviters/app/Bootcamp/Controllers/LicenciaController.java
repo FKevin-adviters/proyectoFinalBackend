@@ -6,6 +6,7 @@ import com.adviters.app.Bootcamp.Repositories.LicenciaRepository;
 import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
 import com.adviters.app.Bootcamp.Services.LicenciaServices;
 import com.adviters.app.Bootcamp.Services.UsuarioServices;
+import com.adviters.app.Bootcamp.dtos.Licencias.LicenciaDTO;
 import com.adviters.app.Bootcamp.dtos.UsuarioLicencia;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -25,6 +27,9 @@ public class LicenciaController {
 
     @Autowired
     private LicenciaServices services;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @GetMapping
     //mapear la lista, por cada licencia de la lista, instanciar el DTO de usuarioLicencia,
@@ -59,7 +64,7 @@ public class LicenciaController {
     @PostMapping(value = "/usuario/{id}")
     public ResponseEntity agregarLicencia(@RequestBody Licencia licencia, @PathVariable UUID id) {
         try {
-            if (licencia.getEndDate().before(licencia.getStartDate())) {
+            /*if (licencia.getEndDate().before(licencia.getStartDate())) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("La fecha de fin de la licencia no puede ser anterior a la fecha de inicio.");
             }
@@ -70,7 +75,7 @@ public class LicenciaController {
             }
             if (licencia.getDocumentation().isEmpty()){
                 
-            }
+            }*/
                 Licencia nuevaLicencia = licenciaRepository.save(licencia);
                 return new ResponseEntity<>(nuevaLicencia, HttpStatus.CREATED);
 
@@ -79,10 +84,10 @@ public class LicenciaController {
         }
     }
 
-    //Obtener todas las licencias por ID
-    @GetMapping("/{idLicencias}")
-    public ResponseEntity<Licencia> obtenerLicenciaPorId(@PathVariable Long idLicencias) {
-        return licenciaRepository.findById(id)
+    //Obtener detalles de 1 licencia
+    @GetMapping("/{idLicencia}")
+    public ResponseEntity<Licencia> obtenerLicenciaPorId(@PathVariable Long idLicencia) {
+        return licenciaRepository.findById(idLicencia)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
         //concatetar que retorne las 3 cosas(tipo de licencia, estado de licencia y licencia)
@@ -91,17 +96,19 @@ public class LicenciaController {
 
     //Obtener todas las licencias del usuario
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<List<Licencia>> obtenerLicenciasPorUsuarioId(@PathVariable UUID idUsuario) {
-        List<Licencia> licencias = licenciaRepository.findByUsuarioId(id);
-        if (licencias.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(licencias);
+    public List<LicenciaDTO> obtenerLicenciasPorUsuarioId(@PathVariable UUID idUsuario) throws Exception {
+        List<LicenciaDTO> lista = services.getLicenciasByUserId(idUsuario);
+        if(lista.isEmpty()){
+            throw new Exception("No se han encontrado las licencias para el usuario.");
         }
+        return lista;
     }
-
     @PutMapping("/{id}")
     public ResponseEntity<Licencia> actualizarLicencia(@PathVariable Long id, @RequestBody Licencia licencia) {
+        //comentario: si buscás por id no te sale solo 1 licencia?
+        //habría q verificar tmb si la licencia existe y si es igual a la q encontramos con la q
+        // nos dio el usuario, dsp de eso guardamos el q nos dio
+        // el save puede hacer update y create a la vez
         return licenciaRepository.findById(id)
                 .map(l -> {
                     l.setEndDate(licencia.getEndDate());
@@ -109,5 +116,18 @@ public class LicenciaController {
                     return ResponseEntity.ok(licenciaRepository.save(l));
                 })
                 .orElse(ResponseEntity.notFound().build());
+    }
+    //Obtener lista de LicenciasDTO para 1 usuario
+    @GetMapping(value = "/usuario/{idUser}/list")
+    public ResponseEntity getListLicenciasByUserId(@PathVariable UUID idUser) throws Exception {
+        Usuario searchedUser = usuarioRepository.findById(idUser).get();
+        if(searchedUser == null) {
+            throw new Exception("No se ha encontrado el usuario.");
+        }
+        List<LicenciaDTO> listLicencia = services.getLicenciasByUserId(idUser);
+        if(listLicencia.isEmpty()) {
+            return new ResponseEntity("Las licencias para el usuario no fueron encontradas", HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity(listLicencia, HttpStatus.OK);
     }
 }

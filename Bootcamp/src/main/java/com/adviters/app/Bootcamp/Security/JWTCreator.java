@@ -35,6 +35,9 @@ public class JWTCreator {
     }
 
     private static List<String> checkRoles(List<String> roles) {
-        return roles.stream().map(s -> "ROLE_".concat(s.replaceAll("ROLE_",""))).collect(Collectors.toList());
+
+        List<String> lista = roles.stream().map(s -> "ROLE_".concat(s.replaceAll("ROLE_",""))).collect(Collectors.toList());
+        System.out.println(lista);
+        return lista;
     }
 }
