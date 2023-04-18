@@ -6,18 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 
 @Data
 @Entity
-@Table
 @AllArgsConstructor
 public class Licencia {
 
@@ -64,7 +60,7 @@ public class Licencia {
     private TipoLicencia tipoLicencia;
 
     @ManyToOne
-    @JoinColumn(name = "license_state", referencedColumnName = "idState")
+    @JoinColumn(name = "license_state", referencedColumnName = "idState", columnDefinition = "int default 0")
     private EstadoLicencia estadoLicencia;
 
     @ManyToOne

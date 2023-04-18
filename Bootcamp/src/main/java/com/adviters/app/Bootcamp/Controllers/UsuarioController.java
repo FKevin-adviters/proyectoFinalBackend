@@ -33,13 +33,8 @@ public class UsuarioController {
     @PostMapping(value = "/usuario")
     public ResponseEntity setUsuario(@RequestBody Usuario usuario){
        try{
-           if(services.checkUser(usuario)) {
                services.createUser(usuario);
                return new ResponseEntity<>(usuario, HttpStatus.CREATED);
-           } else {
-               throw new Exception("El usuario no cumple con los campos necesarios: " + usuario);
-           }
-
        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage() + "\n Causa: " + e.getCause(), HttpStatus.INTERNAL_SERVER_ERROR);
        }

@@ -32,8 +32,9 @@ correo electrónico proporcionado como parámetro.*/
 public interface UsuarioRepository extends JpaRepository<Usuario, UUID> {
     Optional<Usuario> findById(UUID id);
 
-    @Query("SELECT e FROM Usuario e JOIN FETCH e.roles WHERE e.email= (:email)")
+    @Query("SELECT e FROM Usuario e JOIN FETCH e.roles WHERE e.email=(:email)")
     Usuario findByEmail(@Param("email") String email);
+
 
 
 

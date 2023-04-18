@@ -26,8 +26,6 @@ public class LicenciaController {
     private LicenciaServices services;
 
     @GetMapping
-
-
     //mapear la lista, por cada licencia de la lista, instanciar el DTO de usuarioLicencia,
     // el nombre lo vas a sacar del usuarioRepository (licencia.usuario.nombre).
     // el id del usuario lo mismo (licencia.usuario.id)
@@ -38,7 +36,7 @@ public class LicenciaController {
 
         // Crear una lista de DTOs
         List<UsuarioLicencia> usuariosLicencias = new ArrayList<>();
-        for (Licencia licencia : licencias) {
+       /* for (Licencia licencia : licencias) {
             Usuario usuario = UsuarioRepository.findById(licencia.getUsuario().getId());
             UsuarioLicencia usuarioLicencia = new UsuarioLicencia();
             usuarioLicencia.setUsuarioId(usuario.getId());
@@ -48,7 +46,7 @@ public class LicenciaController {
             // crear DTO Licencia
             // tiene que tener idLicencia, startDate, endDate, estadoLicencia, tipoLicencia
             //Crear un servicio que lo setee el DTO, en el parametro pasar el usuario o la licencia
-        }
+        }*/
 
         if (usuariosLicencias.isEmpty()) {
             return ResponseEntity.noContent().build();

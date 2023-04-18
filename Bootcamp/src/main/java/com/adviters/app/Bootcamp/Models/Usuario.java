@@ -89,6 +89,7 @@ public class Usuario {
     @Column
     @NonNull
     private Integer available_days;
+
     @CreatedDate
     @Column
     private Date createdAt;

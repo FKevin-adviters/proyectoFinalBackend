@@ -15,37 +15,9 @@ public class LicenciaServices {
 
     public void createLicencia(Licencia licencia) throws RuntimeException{
         try {
-            if (licencia.getCreatedBy() == null) {
-                throw new RuntimeException("Debe ingresar el creador");
-            } else if (licencia.getDocumentation() == null) {
-                throw new RuntimeException("Debe ingresar la documentación");
-            } else if (licencia.getEndDate() == null) {
-                throw new RuntimeException("Debe ingresar la fecha de finalización");
-            } else if (licencia.getStartDate() == null) {
-                throw new RuntimeException("Debe ingresar la fecha de inicio");
-            } else if (licencia.getUpdatedBy() == null) {
-                throw new RuntimeException("Debe ingresar el actualizador");
-            } else {
-                repository.save(licencia);
-            }
+            repository.save(licencia);
         } catch (Exception e) {
             throw new RuntimeException("No se ha podido crear la licencia: " + licencia + "\n" + e + " Causa: " + e.getCause() + " \n Mensaje: " + e.getMessage());
         }
     }
-
-    public Boolean checkLicencia(Licencia licencia) throws RuntimeException{
-        if (licencia.getCreatedBy() == null) {
-            throw new RuntimeException("Debe ingresar el creador");
-        } else if (licencia.getDocumentation() == null) {
-            throw new RuntimeException("Debe ingresar la documentación");
-        } else if (licencia.getEndDate() == null) {
-            throw new RuntimeException("Debe ingresar la fecha de finalización");
-        } else if (licencia.getStartDate() == null) {
-            throw new RuntimeException("Debe ingresar la fecha de inicio");
-        } else if (licencia.getUpdatedBy() == null) {
-            throw new RuntimeException("Debe ingresar el actualizador");
-        } else {
-            return true;
-        }
-    };
 }

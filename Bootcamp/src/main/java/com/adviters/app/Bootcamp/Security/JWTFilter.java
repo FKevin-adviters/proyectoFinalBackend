@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -29,17 +30,13 @@ public class JWTFilter extends OncePerRequestFilter {
         try {
             if(token!=null && !token.isEmpty()) {
                 JWTObject tokenObject = JWTCreator.create(token,SecurityConfig.PREFIX, SecurityConfig.KEY);
-
                 List<SimpleGrantedAuthority> authorities = authorities(tokenObject.getRoles());
-
                 UsernamePasswordAuthenticationToken userToken =
                         new UsernamePasswordAuthenticationToken(
                                 tokenObject.getSubject(),
                                 null,
                                 authorities);
-
                 SecurityContextHolder.getContext().setAuthentication(userToken);
-
             }else {
                 SecurityContextHolder.clearContext();
             }
