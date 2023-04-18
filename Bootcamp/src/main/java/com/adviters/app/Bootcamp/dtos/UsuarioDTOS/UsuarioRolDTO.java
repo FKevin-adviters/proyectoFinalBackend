@@ -1,4 +1,4 @@
-package com.adviters.app.Bootcamp.Controllers.UsuarioDTOS;
+package com.adviters.app.Bootcamp.dtos.UsuarioDTOS;
 
 import java.util.List;
 import java.util.UUID;
@@ -9,7 +9,15 @@ public class UsuarioRolDTO {
 
     private String name;
 
-    private Boolean isSupervisor;
+    private List<String> roles;
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
 
     public UUID getId() {
         return id;
@@ -27,11 +35,5 @@ public class UsuarioRolDTO {
         this.name = name;
     }
 
-    public Boolean getSupervisor() {
-        return isSupervisor;
-    }
 
-    public void setSupervisor(Boolean supervisor) {
-        isSupervisor = supervisor;
-    }
 }

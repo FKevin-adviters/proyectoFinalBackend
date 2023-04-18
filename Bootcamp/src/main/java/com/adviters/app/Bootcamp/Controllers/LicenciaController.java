@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/licencias")
@@ -54,11 +55,22 @@ public class LicenciaController {
             return ResponseEntity.ok(usuariosLicencias);
         }
     }
-    @PostMapping
-    public ResponseEntity agregarLicencia(@RequestBody Licencia licencia) {
+    //Alta de licencias por usuario
+    @PostMapping(value = "/usuario/{id}")
+    public ResponseEntity agregarLicencia(@RequestBody Licencia licencia, @PathVariable UUID id) {
         try {
-            System.out.println(licencia);
-
+            if (licencia.getEndDate().before(licencia.getStartDate())) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("La fecha de fin de la licencia no puede ser anterior a la fecha de inicio.");
+            }
+            if(licencia.getTipoLicencia().getLicenseId() <= 3) {
+                System.out.println(licencia.getTipoLicencia().getLicenseId());
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(licencia.getTipoLicencia().getLicenseId() + " el tipo de licencia existe");
+            }
+            if (licencia.getDocumentation().isEmpty()){
+                
+            }
                 Licencia nuevaLicencia = licenciaRepository.save(licencia);
                 return new ResponseEntity<>(nuevaLicencia, HttpStatus.CREATED);
 
@@ -67,8 +79,9 @@ public class LicenciaController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Licencia> obtenerLicenciaPorId(@PathVariable Long id) {
+    //Obtener todas las licencias por ID
+    @GetMapping("/{idLicencias}")
+    public ResponseEntity<Licencia> obtenerLicenciaPorId(@PathVariable Long idLicencias) {
         return licenciaRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -76,8 +89,9 @@ public class LicenciaController {
 
     }
 
-    @GetMapping("/usuario/{id}")
-    public ResponseEntity<List<Licencia>> obtenerLicenciasPorUsuarioId(@PathVariable Long id) {
+    //Obtener todas las licencias del usuario
+    @GetMapping("/usuario/{idUsuario}")
+    public ResponseEntity<List<Licencia>> obtenerLicenciasPorUsuarioId(@PathVariable UUID idUsuario) {
         List<Licencia> licencias = licenciaRepository.findByUsuarioId(id);
         if (licencias.isEmpty()) {
             return ResponseEntity.notFound().build();
