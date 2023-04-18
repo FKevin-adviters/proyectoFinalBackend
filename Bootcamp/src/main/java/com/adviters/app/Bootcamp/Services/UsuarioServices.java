@@ -1,5 +1,6 @@
 package com.adviters.app.Bootcamp.Services;
 
+import com.adviters.app.Bootcamp.Controllers.UsuarioDTOS.UsuarioRolDTO;
 import com.adviters.app.Bootcamp.Models.Usuario;
 import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
 
@@ -8,6 +9,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -17,6 +22,10 @@ public class UsuarioServices {
     private UsuarioRepository repository;
     @Autowired
     private PasswordEncoder encoder;
+
+
+    @PersistenceContext
+    private EntityManager entityManager; //esto va a servir para dsp sin necesitamos consultas especificas
     public void createUser(Usuario user) throws RuntimeException{
         try {
             String pass = user.getPassword();
@@ -30,25 +39,14 @@ public class UsuarioServices {
         }
     }
 
-    public Boolean checkUser(Usuario usuario) throws RuntimeException{
-      if (usuario.getName() == null) {
-            throw new RuntimeException("Debe ingresar un nombre");
-        } else if (usuario.getLastname() == null) {
-            throw new RuntimeException("Debe ingresar un apellido");
-        }else if (usuario.getPhone() == null) {
-            throw new RuntimeException("Debe ingresar un numero de tel.");
-        }else if (usuario.getEmail() == null) {
-            throw new RuntimeException("Debe ingresar un correo");
-        }else if (usuario.getPassword() == null) {
-            throw new RuntimeException("Debe ingresar una contraseña");
-        }else if (usuario.getRoles() == null) {
-            throw new RuntimeException("Debe ingresar un rol");
-        }else if (usuario.getBirth_date() == null) {
-            throw new RuntimeException("Debe ingresar su cumpleaños");
-        }else if (usuario.getAvailable_days() == null) {
-            throw new RuntimeException("Debe ingresar los dias disp.");
-        } else {
-            return true;
-        }
+    public List<UsuarioRolDTO> getUsuariosByRol() {
+        List<UsuarioRolDTO> list = (List<UsuarioRolDTO>) repository.findAll().stream().map(user -> {
+            UsuarioRolDTO dto = new UsuarioRolDTO();
+            dto.setId(user.getId());
+            dto.setName(user.getName());
+            dto.setSupervisor(user.getRoles().get(0).equals("SUPERVISOR"));
+            return dto;
+        });
+        return list;
     };
 }
