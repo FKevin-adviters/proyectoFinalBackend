@@ -1,7 +1,7 @@
 package com.adviters.app.Bootcamp.Services;
 
-import com.adviters.app.Bootcamp.Controllers.UsuarioDTOS.UsuarioRolDTO;
-import com.adviters.app.Bootcamp.Controllers.UsuarioDTOS.UsuarioSupervisedBy;
+import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioRolDTO;
+import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioSupervisedBy;
 import com.adviters.app.Bootcamp.Models.Usuario;
 import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
 
@@ -15,6 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -24,11 +28,7 @@ public class UsuarioServices {
     private UsuarioRepository repository;
     @Autowired
     private PasswordEncoder encoder;
-
-
     private static final Logger logger = LoggerFactory.getLogger("Liberty");
-
-
     @PersistenceContext
     private EntityManager entityManager; //esto va a servir para dsp sin necesitamos consultas especificas
     public void createUser(Usuario user) throws RuntimeException{
@@ -43,7 +43,6 @@ public class UsuarioServices {
  + " \n Mensaje: " + e.getMessage());
         }
     }
-
     public HashMap<String, List<UsuarioRolDTO>> getUsuariosByRol()  {
         Query query = entityManager.createQuery("SELECT e FROM Usuario e JOIN FETCH e.roles", Usuario.class);
 
@@ -67,7 +66,6 @@ public class UsuarioServices {
         usuarios.put("usuarios", dtoListUsuarios);
         return usuarios;
     }
-
     public List<UsuarioSupervisedBy> getSupervisedUsersById (UUID id) {
         Query query = entityManager.createQuery("SELECT e FROM Usuario e JOIN FETCH e.roles WHERE e.supervisorId = :supervisorId", Usuario.class);
         query.setParameter("supervisorId", id);
@@ -83,7 +81,6 @@ public class UsuarioServices {
         }
         return userDTOList;
     }
-
     public Boolean checkIfSupervisor (UUID id) throws Exception {
         try{
             Query query = entityManager.createQuery("SELECT e FROM Usuario e JOIN FETCH e.roles WHERE e.id = :userId", Usuario.class);
@@ -97,5 +94,16 @@ public class UsuarioServices {
         } catch(Exception e) {
             throw new Exception("Ha ocurrido un error: " + e.getMessage());
         }
+    }
+    public static Boolean checkIfMayorEdad(Date fecha) {
+        LocalDate fechaToLocalDate =  LocalDate.parse( new SimpleDateFormat("yyyy-MM-dd").format(fecha));
+        LocalDate ahora = LocalDate.now();
+        Period periodo = Period.between(fechaToLocalDate, ahora);
+        if(periodo.getYears() < 18){
+            System.out.println("No es mayor: ");
+            return false;
+        }
+        System.out.println("No es mayor: ");
+        return true;
     }
 }

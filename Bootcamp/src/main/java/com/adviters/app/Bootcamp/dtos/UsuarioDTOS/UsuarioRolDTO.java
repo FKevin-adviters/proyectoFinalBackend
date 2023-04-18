@@ -1,4 +1,4 @@
-package com.adviters.app.Bootcamp.Controllers.UsuarioDTOS;
+package com.adviters.app.Bootcamp.dtos.UsuarioDTOS;
 
 import java.util.List;
 import java.util.UUID;
