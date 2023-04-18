@@ -1,5 +1,6 @@
 package com.adviters.app.Bootcamp.Models.Feriados;
 
+import com.adviters.app.Bootcamp.Models.Usuario;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,16 +33,27 @@ public class Feriado {
     @NotNull
     private Date createdDate;
 
-    @Column
     @NotNull
-    private String createdBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private Usuario createdBy;
 
     @Column
     private Date updatedDate;
 
-    @Column
-    private String updatedBy;
+    @ManyToOne
+    @JoinColumn(name = "updated_by")
+    private Usuario updatedBy;
 
-    //no hay ninguna relacion asi que en este no va nada :P
+    @Column
+    private boolean deleted;
+
+    public Feriado() {
+
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
 }
