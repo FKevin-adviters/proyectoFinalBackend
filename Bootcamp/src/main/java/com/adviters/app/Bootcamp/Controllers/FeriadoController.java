@@ -2,28 +2,58 @@ package com.adviters.app.Bootcamp.Controllers;
 
 import com.adviters.app.Bootcamp.Models.Feriados.Feriado;
 import com.adviters.app.Bootcamp.Repositories.FeriadoRepository;
+import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
+import com.adviters.app.Bootcamp.Services.FeriadoServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
 public class FeriadoController {
 
     @Autowired
-    private FeriadoRepository feriadoRepository;
+    FeriadoServices feriadoServices;
 
-    @PostMapping(value = "/feriado")
+    @PostMapping("/feriados")
     public ResponseEntity<Feriado> createFeriado(@RequestBody Feriado feriado) {
+        Feriado newFeriado = feriadoServices.createFeriado(feriado);
+        return new ResponseEntity<>(newFeriado, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/feriados/{id}")
+    public ResponseEntity<Feriado> getFeriadoById(@PathVariable UUID id) {
+        Optional<Feriado> feriadoData = Optional.ofNullable(feriadoServices.getFeriadoById(id));
+        return feriadoData.map(feriado -> new ResponseEntity<>(feriado, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/feriados")
+    public ResponseEntity<List<Feriado>> getAllFeriados() {
+        List<Feriado> feriados = feriadoServices.getAllFeriados();
+        return new ResponseEntity<>(feriados, HttpStatus.OK);
+    }
+
+    @PutMapping("/feriados/{id}")
+    public ResponseEntity<Feriado> updateFeriado(@PathVariable UUID id, @RequestBody Feriado feriado) {
+        Feriado updatedFeriado = feriadoServices.updateFeriado(id, feriado);
+        if (updatedFeriado != null) {
+            return new ResponseEntity<>(updatedFeriado, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/feriados/{id}")
+    public ResponseEntity<HttpStatus>deleteFeriado(@PathVariable UUID id) {
         try {
-            Feriado savedFeriado = feriadoRepository.save(feriado);
-            return new ResponseEntity<>(savedFeriado, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            feriadoServices.deleteFeriado(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

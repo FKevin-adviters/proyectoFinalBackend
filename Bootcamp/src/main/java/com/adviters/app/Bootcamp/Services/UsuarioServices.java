@@ -1,7 +1,7 @@
 package com.adviters.app.Bootcamp.Services;
 
 import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioRolDTO;
-import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioSupervisedBy;
+import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioDTO;
 import com.adviters.app.Bootcamp.Models.Usuario;
 import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
 
@@ -18,7 +18,6 @@ import javax.persistence.Query;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -30,7 +29,11 @@ public class UsuarioServices {
     private PasswordEncoder encoder;
     private static final Logger logger = LoggerFactory.getLogger("Liberty");
     @PersistenceContext
-    private EntityManager entityManager; //esto va a servir para dsp sin necesitamos consultas especificas
+    private EntityManager entityManager; //esto va a servir para dsp si necesitamos consultas especificas
+
+    public UsuarioServices() {
+    }
+
     public void createUser(Usuario user) throws RuntimeException{
         try {
             String pass = user.getPassword();
@@ -66,13 +69,13 @@ public class UsuarioServices {
         usuarios.put("usuarios", dtoListUsuarios);
         return usuarios;
     }
-    public List<UsuarioSupervisedBy> getSupervisedUsersById (UUID id) {
+    public List<UsuarioDTO> getSupervisedUsersById (UUID id) {
         Query query = entityManager.createQuery("SELECT e FROM Usuario e JOIN FETCH e.roles WHERE e.supervisorId = :supervisorId", Usuario.class);
         query.setParameter("supervisorId", id);
         List<Usuario> userList = query.getResultList();
-        List<UsuarioSupervisedBy> userDTOList = new ArrayList<>();
+        List<UsuarioDTO> userDTOList = new ArrayList<>();
         for (Usuario user: userList) {
-            UsuarioSupervisedBy dto = new UsuarioSupervisedBy();
+            UsuarioDTO dto = new UsuarioDTO();
             dto.setId(user.getId());
             dto.setName(user.getName());
             dto.setLastname(user.getLastname());
@@ -81,6 +84,7 @@ public class UsuarioServices {
         }
         return userDTOList;
     }
+
     public Boolean checkIfSupervisor (UUID id) throws Exception {
         try{
             Query query = entityManager.createQuery("SELECT e FROM Usuario e JOIN FETCH e.roles WHERE e.id = :userId", Usuario.class);
@@ -95,7 +99,8 @@ public class UsuarioServices {
             throw new Exception("Ha ocurrido un error: " + e.getMessage());
         }
     }
-    public static Boolean checkIfMayorEdad(Date fecha) {
+
+    public Boolean checkIfMayorEdad(Date fecha) {
         LocalDate fechaToLocalDate =  LocalDate.parse( new SimpleDateFormat("yyyy-MM-dd").format(fecha));
         LocalDate ahora = LocalDate.now();
         Period periodo = Period.between(fechaToLocalDate, ahora);

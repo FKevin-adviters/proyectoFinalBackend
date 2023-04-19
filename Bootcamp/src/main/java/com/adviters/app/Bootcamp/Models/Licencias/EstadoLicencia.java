@@ -34,7 +34,6 @@ public class EstadoLicencia {
     private List<Licencia> licencias;
 
     public EstadoLicencia() {
-
     }
 }
 
