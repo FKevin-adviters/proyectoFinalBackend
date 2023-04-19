@@ -1,11 +1,13 @@
 package com.adviters.app.Bootcamp.Services;
 
+import com.adviters.app.Bootcamp.Models.Feriados.Feriado;
 import com.adviters.app.Bootcamp.Models.Licencias.EstadoLicencia;
 
 import com.adviters.app.Bootcamp.Models.Licencias.Licencia;
 import com.adviters.app.Bootcamp.Repositories.LicenciaEstadoRepository;
 import com.adviters.app.Bootcamp.Repositories.LicenciaRepository;
 
+import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
 import com.adviters.app.Bootcamp.dtos.Licencias.LicenciaDTO;
 import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -29,6 +29,9 @@ public class LicenciaServices {
     @Autowired
 
     private LicenciaEstadoRepository licenciaEstadoRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -103,4 +106,13 @@ public class LicenciaServices {
         }
         throw new Exception("No se ha encontrado el estado: " + idState);
     };
+
+    public void deleteLicencia(Long id) {
+        Optional<Licencia> licenciaData = repository.findById(id);
+        if (licenciaData.isPresent()) {
+            Licencia _licencia = licenciaData.get();
+            _licencia.setDeleted(true);
+            repository.save(_licencia);
+        }
+    }
 }
