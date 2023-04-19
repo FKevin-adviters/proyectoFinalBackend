@@ -1,6 +1,7 @@
 package com.adviters.app.Bootcamp.Services;
 
 import com.adviters.app.Bootcamp.Models.Licencias.EstadoLicencia;
+
 import com.adviters.app.Bootcamp.Models.Licencias.Licencia;
 import com.adviters.app.Bootcamp.Repositories.LicenciaEstadoRepository;
 import com.adviters.app.Bootcamp.Repositories.LicenciaRepository;
@@ -26,6 +27,7 @@ public class LicenciaServices {
     private LicenciaRepository repository;
 
     @Autowired
+
     private LicenciaEstadoRepository licenciaEstadoRepository;
 
     @Autowired
