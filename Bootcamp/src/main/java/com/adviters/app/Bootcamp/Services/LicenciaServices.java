@@ -1,9 +1,12 @@
 package com.adviters.app.Bootcamp.Services;
 
+import com.adviters.app.Bootcamp.Models.Licencias.EstadoLicencia;
 import com.adviters.app.Bootcamp.Models.Licencias.Licencia;
+import com.adviters.app.Bootcamp.Repositories.LicenciaEstadoRepository;
 import com.adviters.app.Bootcamp.Repositories.LicenciaRepository;
 
 import com.adviters.app.Bootcamp.dtos.Licencias.LicenciaDTO;
+import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,9 @@ import java.util.UUID;
 public class LicenciaServices {
     @Autowired
     private LicenciaRepository repository;
+
+    @Autowired
+    private LicenciaEstadoRepository licenciaEstadoRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -62,4 +68,37 @@ public class LicenciaServices {
         dto.setLicenseTypeId(licencia.getTipoLicencia().getLicenseId());
         return dto;
     }
+
+    public List<LicenciaDTO> getLicenciasDTOByStateId(Long idState) throws Exception{
+        EstadoLicencia estadoLicencia = licenciaEstadoRepository.findById(idState).get();
+        if(estadoLicencia != null){
+            Query query = entityManager.createQuery("SELECT e FROM Licencia e JOIN FETCH e.estadoLicencia state WHERE state.id = :idState", Licencia.class);
+            query.setParameter("idState", idState);
+            List<Licencia> licenciaList = query.getResultList();
+            List<LicenciaDTO> licenciaDTOS = new ArrayList<>();
+            if(licenciaList.isEmpty()) {
+                throw new Exception("No se han encontrado licencias para el idState: " + idState);
+            }
+            for (Licencia licencia :
+                    licenciaList) {
+                LicenciaDTO dto = new LicenciaDTO();
+                UsuarioDTO usuarioDTO = new UsuarioDTO();
+                //usuario dto
+                usuarioDTO.setId(licencia.getUsuario().getId());
+                usuarioDTO.setName(licencia.getUsuario().getName());
+                usuarioDTO.setLastname(licencia.getUsuario().getLastname());
+                usuarioDTO.setProfile_picture(licencia.getUsuario().getProfile_picture());
+                //licencia dto
+                dto.setLicenseId(licencia.getLicenseId());
+                dto.setStatus(licencia.getEstadoLicencia().getDescription());
+                dto.setEndDate(licencia.getEndDate());
+                dto.setStartDate(licencia.getStartDate());
+                dto.setLicenseTypeId(licencia.getTipoLicencia().getLicenseId());
+                dto.setUsuarioDTO(usuarioDTO);
+                licenciaDTOS.add(dto);
+            }
+            return licenciaDTOS;
+        }
+        throw new Exception("No se ha encontrado el estado: " + idState);
+    };
 }
