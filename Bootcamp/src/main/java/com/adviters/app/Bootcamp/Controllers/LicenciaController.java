@@ -79,7 +79,7 @@ public class LicenciaController {
     //Obtener todas las licencias por ID
     @GetMapping("/{idLicencias}")
     public ResponseEntity<Licencia> obtenerLicenciaPorId(@PathVariable Long idLicencias) {
-        return licenciaRepository.findById(id)
+        return licenciaRepository.findById(idLicencias)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
         //concatetar que retorne las 3 cosas(tipo de licencia, estado de licencia y licencia)
