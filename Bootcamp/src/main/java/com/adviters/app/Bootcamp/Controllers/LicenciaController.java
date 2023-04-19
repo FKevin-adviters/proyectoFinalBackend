@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/licencias")
@@ -29,39 +30,39 @@ public class LicenciaController {
     private UsuarioRepository usuarioRepository;
 
     @GetMapping(value = "/")
-    public ResponseEntity<?> obtenerUsuariosLicencias() {
-        List<Licencia> licencias = licenciaRepository.findAll();
-        if(licencias.isEmpty()) {
-            return new ResponseEntity<>("No hay licencias en la base de datos.", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> obtenerUsuariosLicencias(@RequestParam(value = "state", required = false) Long idState, @RequestParam(value = "historial", required = false) Boolean historial) throws Exception {
+            if(idState != null) {
+                List<LicenciaDTO> licenciaDTOS=services.getLicenciasDTOByStateId(idState);
+                if(!licenciaDTOS.isEmpty()) {
+                    if(historial != null) {
+                        List<LicenciaDTO> newLicenciaDtos = licenciaDTOS.stream().filter(licenciaDTO -> {
+                            if(historial) {
+                                return licenciaDTO.getStartDate().before(new Date());
+                            } else {
+                                return licenciaDTO.getStartDate().after(new Date());
+                            }}).collect(Collectors.toList());
+                        return ResponseEntity.ok(newLicenciaDtos);
+                    }
+                    return ResponseEntity.ok(licenciaDTOS);
+                }
+                return new ResponseEntity<>("No se han encontrado las licencias", HttpStatus.NOT_FOUND);
+            }
+            List<Licencia> licenciaList = licenciaRepository.findAll();
+            List<LicenciaDTO> licenciaDTOList = licenciaList.stream().map(licencia -> {
+                LicenciaDTO dto = new LicenciaDTO();
+                dto.setLicenseId(licencia.getLicenseId());
+                dto.setStatus(licencia.getEstadoLicencia().getDescription());
+                dto.setEndDate(licencia.getEndDate());
+                dto.setStartDate(licencia.getStartDate());
+                dto.setLicenseTypeId(licencia.getTipoLicencia().getLicenseId());
+                return dto;
+            }).collect(Collectors.toList());
+            if(licenciaList.isEmpty()){
+                return new ResponseEntity<>("No se han encontrado licencias", HttpStatus.NOT_FOUND);
+            }
+            return ResponseEntity.ok(licenciaDTOList);
         }
-        // Crear una lista de DTOs
-        List<HashMap<String, Object>> usuariosLicencias = new ArrayList<>();
-        for (Licencia licencia : licencias) {
-            HashMap<String, Object> mapaUserLicense = new HashMap<>();
-            HashMap<String, Object> newLicencia = new HashMap<>();
-            Usuario usuario = licencia.getUsuario();
-            //creamos el usuario en su dto
-            UsuarioDTO usuarioDTO = new UsuarioDTO();
-            usuarioDTO.setId(usuario.getId());
-            usuarioDTO.setName(usuario.getName());
-            usuarioDTO.setProfile_picture(usuario.getProfile_picture());
-            //creamos la licencia en su nuevo mapa
-            newLicencia.put("license_id", licencia.getLicenseId());
-            newLicencia.put("state", licencia.getEstadoLicencia().getIdState());
-            newLicencia.put("license_type_id", licencia.getTipoLicencia().getLicenseId());
-            newLicencia.put("startDate", licencia.getStartDate());
-            newLicencia.put("endDate", licencia.getEndDate());
-            //los agregamos a mapaUserLicense
-            mapaUserLicense.put("user", usuarioDTO);
-            mapaUserLicense.put("license", newLicencia);
-            //y lo agregamos a la lista
-            usuariosLicencias.add(mapaUserLicense);
-            // crear DTO Licencia
-            // tiene que tener idLicencia, startDate, endDate, estadoLicencia, tipoLicencia
-            //Crear un servicio que lo setee el DTO, en el parametro pasar el usuario o la licencia
-        }
-        return ResponseEntity.ok(usuariosLicencias);
-    }
+
 
     //Alta de licencias por usuario
     @PostMapping(value = "/usuario/{id}")
