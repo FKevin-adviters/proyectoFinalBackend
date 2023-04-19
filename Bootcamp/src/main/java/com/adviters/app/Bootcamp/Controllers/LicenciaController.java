@@ -26,6 +26,9 @@ public class LicenciaController {
     @Autowired
     private LicenciaServices services;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     @GetMapping
     //mapear la lista, por cada licencia de la lista, instanciar el DTO de usuarioLicencia,
     // el nombre lo vas a sacar del usuarioRepository (licencia.usuario.nombre).
@@ -57,26 +60,20 @@ public class LicenciaController {
     }
     //Alta de licencias por usuario
     @PostMapping(value = "/usuario/{id}")
-    public ResponseEntity agregarLicencia(@RequestBody Licencia licencia, @PathVariable UUID id) {
-        try {
-            if (licencia.getEndDate().before(licencia.getStartDate())) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("La fecha de fin de la licencia no puede ser anterior a la fecha de inicio.");
-            }
-            if(licencia.getTipoLicencia().getLicenseId() <= 3) {
-                System.out.println(licencia.getTipoLicencia().getLicenseId());
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(licencia.getTipoLicencia().getLicenseId() + " el tipo de licencia existe");
-            }
-            if (licencia.getDocumentation().isEmpty()){
-                
-            }
-                Licencia nuevaLicencia = licenciaRepository.save(licencia);
-                return new ResponseEntity<>(nuevaLicencia, HttpStatus.CREATED);
+    public ResponseEntity agregarLicencia(@RequestBody Licencia licencia, @PathVariable UUID id) throws Exception {
+        Usuario user = usuarioRepository.findById(id).get();
 
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage() + "\n Causa: " + e.getCause(), HttpStatus.INTERNAL_SERVER_ERROR);
+        if (user != null) {
+            try {
+                if (services.checkLicencia(licencia, user)) {
+                    Licencia nuevaLicencia = licenciaRepository.save(licencia);
+                    return new ResponseEntity<>(nuevaLicencia, HttpStatus.CREATED);
+                }
+            } catch (Exception e) {
+                return new ResponseEntity<>(e.getMessage() + "\n Causa: " + e.getCause(), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
+            throw new Exception("Error, no se encuentra el usuario");
     }
 
     //Obtener todas las licencias por ID
@@ -90,15 +87,15 @@ public class LicenciaController {
     }
 
     //Obtener todas las licencias del usuario
-    @GetMapping("/usuario/{idUsuario}")
+    /*@GetMapping("/usuario/{idUsuario}")
     public ResponseEntity<List<Licencia>> obtenerLicenciasPorUsuarioId(@PathVariable UUID idUsuario) {
-        List<Licencia> licencias = licenciaRepository.findByUsuarioId(id);
+        List<Licencia> licencias = licenciaRepository.findByUsuarioId(idUsuario);
         if (licencias.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.ok(licencias);
         }
-    }
+    }*/
 
     @PutMapping("/{id}")
     public ResponseEntity<Licencia> actualizarLicencia(@PathVariable Long id, @RequestBody Licencia licencia) {

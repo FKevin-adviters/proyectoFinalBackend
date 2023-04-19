@@ -34,7 +34,7 @@ public class Licencia {
 
     @Column
     @NonNull
-    private Integer availableDays;
+    private Integer requiredDays;
 
     @Column
     private String documentation;
