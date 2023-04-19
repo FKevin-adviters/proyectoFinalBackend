@@ -66,9 +66,9 @@ public class Licencia {
 
     @ManyToOne
     @JoinColumn(name = "license_user", referencedColumnName = "id")
+    @JsonIgnore
     private Usuario usuario;
 
     public Licencia() {
-
     }
 }

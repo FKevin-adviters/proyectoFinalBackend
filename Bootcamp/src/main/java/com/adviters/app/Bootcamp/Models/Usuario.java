@@ -1,5 +1,6 @@
 package com.adviters.app.Bootcamp.Models;
 import com.adviters.app.Bootcamp.Models.Feriados.Feriado;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -13,11 +14,13 @@ import java.util.UUID;
     @Entity
 public class Usuario {
 
-        @OneToMany(mappedBy = "createdBy")
-        private List<Feriado> feriados;
+    @JsonIgnore
+    @OneToMany(mappedBy = "createdBy")
+    private List<Feriado> feriados;
 
-        @OneToMany(mappedBy = "updatedBy")
-        private List<Feriado> feriadosActualizados;
+    @JsonIgnore
+    @OneToMany(mappedBy = "updatedBy")
+    private List<Feriado> feriadosActualizados;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

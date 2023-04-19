@@ -4,12 +4,9 @@ import java.util.Date;
 
 public class LicenciaDTO {
     private Long licenseId;
-
     private Long licenseTypeId;
     private String status;
-
     private Date startDate;
-
     private Date endDate;
 
     public Long getLicenseTypeId() {

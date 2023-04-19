@@ -25,16 +25,8 @@ public class LicenciaServices {
     @Autowired
     private EntityManager entityManager;
 
-    public void createLicencia(Licencia licencia) throws RuntimeException{
-        try {
-            repository.save(licencia);
-        } catch (Exception e) {
-            throw new RuntimeException("No se ha podido crear la licencia: " + licencia + "\n" + e + " Causa: " + e.getCause() + " \n Mensaje: " + e.getMessage());
-        }
-    }
-
     public List<LicenciaDTO> getLicenciasByUserId(UUID id) throws Exception {
-        Query query = entityManager.createQuery("SELECT e FROM Licencia e JOIN FETCH e.usuario as user WHERE user.id = :userId", Licencia.class);
+        Query query = entityManager.createQuery("SELECT e FROM Licencia e JOIN FETCH e.usuario user WHERE user.id = :userId", Licencia.class);
         query.setParameter("userId", id);
         List<Licencia> licenciaList = query.getResultList();
         List<LicenciaDTO> dtoList= new ArrayList<>();
@@ -54,4 +46,20 @@ public class LicenciaServices {
         return dtoList;
     }
 
+    public LicenciaDTO getOneLicenseByUserAndLicenseID(UUID userId, Long licenseId) throws Exception {
+        Query query = entityManager.createQuery("SELECT e FROM Licencia e JOIN FETCH e.usuario user WHERE user.id = :userId AND e.id = :licenseId", Licencia.class);
+        query.setParameter("userId", userId);
+        query.setParameter("licenseId", licenseId);
+        Licencia licencia = (Licencia) query.getSingleResult();
+        if(licencia == null) {
+            throw new Exception("No se ha encontrado la licencia");
+        }
+        LicenciaDTO dto = new LicenciaDTO();
+        dto.setEndDate(licencia.getEndDate());
+        dto.setStartDate(licencia.getStartDate());
+        dto.setStatus(licencia.getEstadoLicencia().getDescription());
+        dto.setLicenseId(licencia.getLicenseId());
+        dto.setLicenseTypeId(licencia.getTipoLicencia().getLicenseId());
+        return dto;
+    }
 }

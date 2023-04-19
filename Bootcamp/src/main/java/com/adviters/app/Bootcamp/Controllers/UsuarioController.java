@@ -1,7 +1,8 @@
 package com.adviters.app.Bootcamp.Controllers;
 
+import com.adviters.app.Bootcamp.Services.ServiciosGenerales;
 import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioRolDTO;
-import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioSupervisedBy;
+import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioDTO;
 import com.adviters.app.Bootcamp.Models.Usuario;
 import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
 import com.adviters.app.Bootcamp.Services.UsuarioServices;
@@ -46,16 +47,13 @@ public class UsuarioController {
     public ResponseEntity updateUsuario(@RequestBody Usuario usuario) throws Exception{
         try{Usuario searchUser = usuarioRepository.findById(usuario.getId()).get();
             if(searchUser != null) {
-                if(!usuario.getRoles().contains("SUPERVISOR") && !usuario.getRoles().contains("USUARIO")){
-                    usuario.setRoles(new ArrayList<>(null));
-                } else if(!searchUser.getBirth_date().equals(usuario.getBirth_date())){
-
-                }
-                usuarioRepository.save(usuario);
+                ServiciosGenerales.copyNonNullProperties(usuario, searchUser);
+                usuarioRepository.save(searchUser);
                 return new ResponseEntity("Usuario actualizado", HttpStatus.ACCEPTED);
             } else {
                 return new ResponseEntity("No se ha podido actualizar el usuario", HttpStatus.BAD_REQUEST);
-            }}catch(Exception e){
+            }
+        }catch(Exception e){
             throw new Exception("No se ha aceptado la actualizacion de usuario." + e.getMessage());
         }
     }
@@ -68,7 +66,7 @@ public class UsuarioController {
        }
     }
     @GetMapping(value = "/usuario/supervisor/{supervisorId}")
-    public List<UsuarioSupervisedBy> getUsuariosSupervisedBy(@PathVariable UUID supervisorId) throws Exception {
+    public List<UsuarioDTO> getUsuariosSupervisedBy(@PathVariable UUID supervisorId) throws Exception {
         if(!usuarioServices.checkIfSupervisor(supervisorId)) {
             throw new Exception("El usuario ingresado no es supervisor");
         }

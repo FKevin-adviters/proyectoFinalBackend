@@ -2,7 +2,7 @@ package com.adviters.app.Bootcamp.dtos.UsuarioDTOS;
 
 import java.util.UUID;
 
-public class UsuarioSupervisedBy {
+public class UsuarioDTO {
     private String name;
     private String lastname;
     private UUID id;

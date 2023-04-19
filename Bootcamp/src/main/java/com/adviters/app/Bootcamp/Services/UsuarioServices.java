@@ -1,8 +1,7 @@
 package com.adviters.app.Bootcamp.Services;
 
-import com.adviters.app.Bootcamp.Models.Licencias.Licencia;
 import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioRolDTO;
-import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioSupervisedBy;
+import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioDTO;
 import com.adviters.app.Bootcamp.Models.Usuario;
 import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
 
@@ -30,7 +29,7 @@ public class UsuarioServices {
     private PasswordEncoder encoder;
     private static final Logger logger = LoggerFactory.getLogger("Liberty");
     @PersistenceContext
-    private EntityManager entityManager; //esto va a servir para dsp sin necesitamos consultas especificas
+    private EntityManager entityManager; //esto va a servir para dsp si necesitamos consultas especificas
 
     public UsuarioServices() {
     }
@@ -70,13 +69,13 @@ public class UsuarioServices {
         usuarios.put("usuarios", dtoListUsuarios);
         return usuarios;
     }
-    public List<UsuarioSupervisedBy> getSupervisedUsersById (UUID id) {
+    public List<UsuarioDTO> getSupervisedUsersById (UUID id) {
         Query query = entityManager.createQuery("SELECT e FROM Usuario e JOIN FETCH e.roles WHERE e.supervisorId = :supervisorId", Usuario.class);
         query.setParameter("supervisorId", id);
         List<Usuario> userList = query.getResultList();
-        List<UsuarioSupervisedBy> userDTOList = new ArrayList<>();
+        List<UsuarioDTO> userDTOList = new ArrayList<>();
         for (Usuario user: userList) {
-            UsuarioSupervisedBy dto = new UsuarioSupervisedBy();
+            UsuarioDTO dto = new UsuarioDTO();
             dto.setId(user.getId());
             dto.setName(user.getName());
             dto.setLastname(user.getLastname());
