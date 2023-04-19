@@ -1,9 +1,11 @@
 package com.adviters.app.Bootcamp.Services;
 
+import com.adviters.app.Bootcamp.Models.Feriados.Feriado;
 import com.adviters.app.Bootcamp.Models.Licencias.Licencia;
 import com.adviters.app.Bootcamp.Models.Usuario;
 import com.adviters.app.Bootcamp.Repositories.LicenciaRepository;
 
+import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
 import com.adviters.app.Bootcamp.dtos.Licencias.LicenciaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,15 +15,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
 public class LicenciaServices {
     @Autowired
     private LicenciaRepository repository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -76,4 +79,17 @@ public class LicenciaServices {
         }
         return true;
     };
+
+    public void deleteLicencia(Long id) {
+        Licencia licenciaData = repository.findById(id).get();
+        if (licenciaData == null) {
+            Licencia _licencia = licenciaData;
+            _licencia.setDeleted(true);
+            _licencia.setUpdatedBy(licenciaData.getUsuario().getId());
+            _licencia.setUpdatedDate(new Date());
+            repository.save(_licencia);
+        }
+
+    }
+
 }

@@ -101,8 +101,8 @@ public class LicenciaController {
         //habría q notificar al usuario
         if (/*pendiente*/ licencia1.getEstadoLicencia().getIdState() == 0 || licencia1.getEstadoLicencia().getIdState() == 1 /*rechazado: habría q notificar al user*/) {
         } else if (licencia1.getEstadoLicencia().getIdState() == 2) {
-            if (usuario.getAvailable_days() > licencia1.getAvailableDays()) {
-                usuario.setAvailable_days(usuario.getAvailable_days() - licencia1.getAvailableDays());
+            if (usuario.getAvailable_days() > licencia1.getRequiredDays()) {
+                usuario.setAvailable_days(usuario.getAvailable_days() - licencia1.getRequiredDays());
                 usuarioRepository.save(usuario);
             } else {
                 return new ResponseEntity<>("No tiene los días disponibles para aprobar la licencia", HttpStatus.BAD_REQUEST);
@@ -131,4 +131,15 @@ public class LicenciaController {
         }
         return new ResponseEntity(listLicencia, HttpStatus.OK);
     }
+
+    @DeleteMapping("/licencia/{id}")
+    public ResponseEntity<HttpStatus>deletelicencia(@PathVariable Long id) {
+        try {
+            services.deleteLicencia(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

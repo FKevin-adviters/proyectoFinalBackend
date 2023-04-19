@@ -1,5 +1,6 @@
 package com.adviters.app.Bootcamp.Services;
 
+import com.adviters.app.Bootcamp.Models.Feriados.Feriado;
 import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioRolDTO;
 import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioDTO;
 import com.adviters.app.Bootcamp.Models.Usuario;
@@ -110,5 +111,14 @@ public class UsuarioServices {
         }
         System.out.println("No es mayor: ");
         return true;
+    }
+
+    public void deleteUsuario(UUID id) {
+        Optional<Usuario> usuarioData = repository.findById(id);
+        if (usuarioData.isPresent()) {
+            Usuario _usuario = usuarioData.get();
+            _usuario.setDeleted(true);
+            repository.save(_usuario);
+        }
     }
 }

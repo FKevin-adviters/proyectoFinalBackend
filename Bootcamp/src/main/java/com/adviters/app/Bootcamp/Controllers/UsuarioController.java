@@ -34,6 +34,7 @@ public class UsuarioController {
     public ResponseEntity setUsuario(@RequestBody Usuario usuario){
        try{
            if(usuarioServices.checkIfMayorEdad(usuario.getBirth_date())){
+               usuario.setDeleted(false);
                usuarioServices.createUser(usuario);
                return new ResponseEntity<>(usuario, HttpStatus.CREATED);
            } else {
@@ -72,4 +73,15 @@ public class UsuarioController {
         }
         return usuarioServices.getSupervisedUsersById(supervisorId);
     }
+
+    @DeleteMapping("/usuario/delete/{id}")
+    public ResponseEntity<HttpStatus>deleteUsuario(@PathVariable UUID id) {
+        try {
+            usuarioServices.deleteUsuario(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

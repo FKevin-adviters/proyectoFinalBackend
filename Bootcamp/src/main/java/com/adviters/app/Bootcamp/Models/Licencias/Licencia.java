@@ -69,6 +69,14 @@ public class Licencia {
     @JsonIgnore
     private Usuario usuario;
 
+    @Column
+    private boolean deleted;
+
     public Licencia() {
     }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
 }

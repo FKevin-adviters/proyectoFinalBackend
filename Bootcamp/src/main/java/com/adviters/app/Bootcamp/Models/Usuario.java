@@ -106,8 +106,13 @@ public class Usuario {
     @Column
     private UUID supervisorId;
 
+    @Column
+    private boolean deleted;
+
     public Usuario() {
     }
 
-
+    public void setDeleted(boolean deleted) {
+            this.deleted = deleted;
+        }
 }
