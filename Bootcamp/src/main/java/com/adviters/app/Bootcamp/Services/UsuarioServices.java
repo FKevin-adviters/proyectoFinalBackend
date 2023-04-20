@@ -35,6 +35,28 @@ public class UsuarioServices {
     public UsuarioServices() {
     }
 
+    public UsuarioDTO createUsuarioDTO(Usuario usuario) {
+        UsuarioDTO dto = new UsuarioDTO();
+        dto.setProfile_picture(usuario.getProfile_picture());
+        dto.setId(usuario.getId());
+        dto.setName(usuario.getName());
+        dto.setLastname(usuario.getLastname());
+        //buscamos el supervisor y lo ponemos en otro usuarioDTO
+        if(usuario.getSupervisorId() != null) {
+            Usuario supervisor = repository.findById(usuario.getSupervisorId()).get();
+            if(supervisor == null){
+                return dto;
+            }
+            UsuarioDTO supDTO = new UsuarioDTO();
+            supDTO.setId(supervisor.getId());
+            supDTO.setName(supervisor.getName());
+            supDTO.setLastname(supervisor.getLastname());
+            supDTO.setProfile_picture(supervisor.getProfile_picture());
+            dto.setSupervisor(supDTO);
+            return dto;
+        }
+        return dto;
+    };
     public void createUser(Usuario user) throws RuntimeException{
         try {
             String pass = user.getPassword();

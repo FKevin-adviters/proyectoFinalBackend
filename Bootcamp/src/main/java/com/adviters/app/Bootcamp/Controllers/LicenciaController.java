@@ -7,6 +7,7 @@ import com.adviters.app.Bootcamp.Repositories.LicenciaRepository;
 import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
 import com.adviters.app.Bootcamp.Services.LicenciaServices;
 import com.adviters.app.Bootcamp.Services.ServiciosGenerales;
+import com.adviters.app.Bootcamp.Services.UsuarioServices;
 import com.adviters.app.Bootcamp.dtos.Licencias.LicenciaDTO;
 import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class LicenciaController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private UsuarioServices usuarioServices;
 
     @GetMapping(value = "/")
     public ResponseEntity<?> obtenerUsuariosLicencias(@RequestParam(value = "state", required = false) Long idState, @RequestParam(value = "historial", required = false) Boolean historial) throws Exception {
@@ -88,10 +92,21 @@ public class LicenciaController {
     }
     //Obtener detalles de 1 licencia
     @GetMapping("/{idLicencia}")
-    public ResponseEntity<Licencia> obtenerLicenciaPorId(@PathVariable Long idLicencia) {
-        return licenciaRepository.findById(idLicencia)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> obtenerLicenciaPorId(@PathVariable Long idLicencia) {
+         Licencia licencia = licenciaRepository.findById(idLicencia).get();
+         if(licencia != null) {
+             LicenciaDTO licenciaDTO = new LicenciaDTO();
+             licenciaDTO.setStartDate(licencia.getStartDate());
+             licenciaDTO.setEndDate(licencia.getEndDate());
+             licenciaDTO.setLicenseTypeId(licencia.getTipoLicencia().getLicenseId());
+             licenciaDTO.setStatus(licencia.getEstadoLicencia().getDescription());
+             licenciaDTO.setLicenseId(licencia.getLicenseId());
+             licenciaDTO.setDescription(licencia.getDescription());
+             UsuarioDTO usuarioDTO = usuarioServices.createUsuarioDTO(licencia.getUsuario());
+             licenciaDTO.setUsuarioDTO(usuarioDTO);
+             return new ResponseEntity<>(licenciaDTO, HttpStatus.OK);
+         }
+         return new ResponseEntity<>("No se ha encontrado la licencia", HttpStatus.NOT_FOUND);
         //concatetar que retorne las 3 cosas(tipo de licencia, estado de licencia y licencia)
     }
 
@@ -126,16 +141,23 @@ public class LicenciaController {
 
     //Obtener lista de LicenciasDTO para 1 usuario
     @GetMapping(value = "/usuario/{idUser}/list")
-    public ResponseEntity getListLicenciasByUserId(@PathVariable UUID idUser) throws Exception {
+    public ResponseEntity getListLicenciasByUserId(@PathVariable UUID idUser, @RequestParam(value = "historial", required = false) Boolean historial) throws Exception {
         Usuario searchedUser = usuarioRepository.findById(idUser).get();
         if(searchedUser == null) {
             throw new Exception("No se ha encontrado el usuario.");
         }
-        List<LicenciaDTO> listLicencia = services.getLicenciasByUserId(idUser);
-        if(listLicencia.isEmpty()) {
-            return new ResponseEntity("Las licencias para el usuario no fueron encontradas", HttpStatus.NO_CONTENT);
+        List<LicenciaDTO> licenciaDTOS = services.getLicenciasByUserId(idUser);
+        if(historial != null) {
+            List<LicenciaDTO> newLicenciaDtos = licenciaDTOS.stream().filter(licenciaDTO -> {
+                if (historial) {
+                    return licenciaDTO.getStartDate().before(new Date());
+                } else {
+                    return licenciaDTO.getStartDate().after(new Date());
+                }
+            }).collect(Collectors.toList());
+            return new ResponseEntity<>(newLicenciaDtos, HttpStatus.OK);
         }
-        return new ResponseEntity(listLicencia, HttpStatus.OK);
+        return new ResponseEntity(licenciaDTOS, HttpStatus.OK);
     }
 
     @DeleteMapping("/licencia/{id}")

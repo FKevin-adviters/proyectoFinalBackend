@@ -27,11 +27,13 @@ public class LicenciaServices {
     private LicenciaRepository repository;
 
     @Autowired
-
     private LicenciaEstadoRepository licenciaEstadoRepository;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private UsuarioServices usuarioServices;
 
     @Autowired
     private EntityManager entityManager;
@@ -52,6 +54,8 @@ public class LicenciaServices {
             dto.setStatus(licencia.getEstadoLicencia().getDescription());
             dto.setStartDate(licencia.getStartDate());
             dto.setEndDate(licencia.getEndDate());
+            UsuarioDTO userDto = usuarioServices.createUsuarioDTO(licencia.getUsuario());
+            dto.setUsuarioDTO(userDto);
             dtoList.add(dto);
         }
         return dtoList;
@@ -82,7 +86,7 @@ public class LicenciaServices {
             List<Licencia> licenciaList = query.getResultList();
             List<LicenciaDTO> licenciaDTOS = new ArrayList<>();
             if(licenciaList.isEmpty()) {
-                throw new Exception("No se han encontrado licencias para el idState: " + idState);
+                return licenciaDTOS;
             }
             for (Licencia licencia :
                     licenciaList) {
@@ -104,9 +108,48 @@ public class LicenciaServices {
             }
             return licenciaDTOS;
         }
-        throw new Exception("No se ha encontrado el estado: " + idState);
+        List<LicenciaDTO> list = new ArrayList<>();
+        return list;
     };
 
+
+    public List<LicenciaDTO> getLicenciasDTOByStateIdAndUserId(Long idState, UUID userId) throws Exception{
+        EstadoLicencia estadoLicencia = licenciaEstadoRepository.findById(idState).get();
+        if(estadoLicencia != null){
+            Query query = entityManager.createQuery("SELECT e FROM Licencia e JOIN FETCH e.estadoLicencia state WHERE state.id = :idState", Licencia.class);
+            query.setParameter("idState", idState);
+            List<Licencia> licenciaList = query.getResultList();
+            List<LicenciaDTO> licenciaDTOS = new ArrayList<>();
+            if(licenciaList.isEmpty()) {
+                throw new Exception("No se han encontrado licencias para el idState: " + idState);
+            }
+            for (Licencia licencia :
+                    licenciaList) {
+                if(licencia.getUsuario().getId() != null && licencia.getUsuario().getId() == userId) {
+                    LicenciaDTO dto = new LicenciaDTO();
+                    UsuarioDTO usuarioDTO = new UsuarioDTO();
+                    //usuario dto
+                    usuarioDTO.setId(licencia.getUsuario().getId());
+                    usuarioDTO.setName(licencia.getUsuario().getName());
+                    usuarioDTO.setLastname(licencia.getUsuario().getLastname());
+                    usuarioDTO.setProfile_picture(licencia.getUsuario().getProfile_picture());
+                    //licencia dto
+                    dto.setLicenseId(licencia.getLicenseId());
+                    dto.setStatus(licencia.getEstadoLicencia().getDescription());
+                    dto.setEndDate(licencia.getEndDate());
+                    dto.setStartDate(licencia.getStartDate());
+                    dto.setLicenseTypeId(licencia.getTipoLicencia().getLicenseId());
+                    dto.setUsuarioDTO(usuarioDTO);
+                    licenciaDTOS.add(dto);
+                }
+            }
+            if(licenciaDTOS.isEmpty()){
+                throw new Exception("No se han encontrado licencias para el usuario con el estado asignado");
+            }
+            return licenciaDTOS;
+        }
+        throw new Exception("No se ha encontrado el estado: " + idState);
+    };
     public void deleteLicencia(Long id) {
         Optional<Licencia> licenciaData = repository.findById(id);
         if (licenciaData.isPresent()) {
