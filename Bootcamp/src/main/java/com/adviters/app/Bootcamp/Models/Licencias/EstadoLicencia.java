@@ -1,5 +1,6 @@
 package com.adviters.app.Bootcamp.Models.Licencias;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,10 @@ public class EstadoLicencia {
     private List<Licencia> licencias;
 
     public EstadoLicencia() {
+    }
+
+    public EstadoLicencia (Long idState) {
+        this.idState = idState;
     }
 }
 

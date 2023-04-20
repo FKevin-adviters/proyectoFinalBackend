@@ -8,6 +8,16 @@ public class UsuarioDTO {
     private UUID id;
     private String profile_picture;
 
+    private UsuarioDTO supervisor;
+
+    public UsuarioDTO getSupervisor() {
+        return supervisor;
+    }
+
+    public void setSupervisor(UsuarioDTO supervisor) {
+        this.supervisor = supervisor;
+    }
+
     public String getName() {
         return name;
     }

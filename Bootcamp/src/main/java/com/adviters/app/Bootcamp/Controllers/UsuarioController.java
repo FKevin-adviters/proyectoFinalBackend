@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -21,9 +22,33 @@ public class UsuarioController {
     @Autowired
     private UsuarioServices usuarioServices;
     @GetMapping(value = "/usuario")
-    public ResponseEntity<List<Usuario>> getUsuario(){
+    public ResponseEntity<?> getUsuario(){
         List<Usuario> list = usuarioRepository.findAll();
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        if(list.isEmpty()) {
+            return new ResponseEntity<>("No se han encontrado usuarios", HttpStatus.NOT_FOUND);
+        }
+        List<UsuarioDTO> listDto =  list.stream().map(user -> {
+
+            UsuarioDTO dto = new UsuarioDTO();
+            dto.setId(user.getId());
+            dto.setProfile_picture(user.getProfile_picture());
+            dto.setName(user.getName());
+            dto.setLastname(user.getLastname());
+            if(user.getSupervisorId() == null) {
+                dto.setSupervisor(null);
+                return dto;
+            }
+            Usuario supervisor = usuarioRepository.findById(user.getSupervisorId()).get();
+            UsuarioDTO supervisorDTO = new UsuarioDTO();
+            supervisorDTO.setSupervisor(null);
+            supervisorDTO.setName(supervisor.getName());
+            supervisorDTO.setProfile_picture(supervisor.getProfile_picture());
+            supervisorDTO.setLastname(supervisor.getLastname());
+            supervisorDTO.setId(supervisor.getId());
+            dto.setSupervisor(supervisorDTO);
+            return dto;
+        }).collect(Collectors.toList());
+        return new ResponseEntity<>(listDto, HttpStatus.OK);
     }
     @GetMapping(value = "/usuario/{id}")
     public Usuario getUsuarioById(@PathVariable UUID id){
@@ -34,6 +59,7 @@ public class UsuarioController {
     public ResponseEntity setUsuario(@RequestBody Usuario usuario){
        try{
            if(usuarioServices.checkIfMayorEdad(usuario.getBirth_date())){
+               usuario.setDeleted(false);
                usuarioServices.createUser(usuario);
                return new ResponseEntity<>(usuario, HttpStatus.CREATED);
            } else {
@@ -72,4 +98,15 @@ public class UsuarioController {
         }
         return usuarioServices.getSupervisedUsersById(supervisorId);
     }
+
+    @DeleteMapping("/usuario/delete/{id}")
+    public ResponseEntity<HttpStatus>deleteUsuario(@PathVariable UUID id) {
+        try {
+            usuarioServices.deleteUsuario(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

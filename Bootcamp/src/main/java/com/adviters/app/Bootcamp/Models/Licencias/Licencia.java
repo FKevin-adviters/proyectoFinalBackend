@@ -9,7 +9,6 @@ import lombok.NonNull;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -38,6 +37,9 @@ public class Licencia {
 
     @Column
     private String documentation;
+
+    @Column
+    private String description;
 
     @Column(updatable = false)
     @NonNull
@@ -69,6 +71,16 @@ public class Licencia {
     @JsonIgnore
     private Usuario usuario;
 
+    @Column
+    private UUID licenseSupervisor;
+
+    @Column
+    private boolean deleted;
+
     public Licencia() {
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

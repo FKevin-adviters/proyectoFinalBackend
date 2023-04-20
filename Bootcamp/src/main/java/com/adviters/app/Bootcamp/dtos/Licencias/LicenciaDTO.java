@@ -1,5 +1,7 @@
 package com.adviters.app.Bootcamp.dtos.Licencias;
 
+import com.adviters.app.Bootcamp.dtos.UsuarioDTOS.UsuarioDTO;
+
 import java.util.Date;
 
 public class LicenciaDTO {
@@ -8,6 +10,15 @@ public class LicenciaDTO {
     private String status;
     private Date startDate;
     private Date endDate;
+    private UsuarioDTO usuarioDTO;
+
+    public UsuarioDTO getUsuarioDTO() {
+        return usuarioDTO;
+    }
+
+    public void setUsuarioDTO(UsuarioDTO usuarioDTO) {
+        this.usuarioDTO = usuarioDTO;
+    }
 
     public Long getLicenseTypeId() {
         return licenseTypeId;

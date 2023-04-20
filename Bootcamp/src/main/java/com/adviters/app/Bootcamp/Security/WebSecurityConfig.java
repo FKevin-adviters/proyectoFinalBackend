@@ -38,17 +38,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .addFilterAfter(new JWTFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers(SWAGGER_WHITELIST).permitAll()
+                /*.antMatchers(SWAGGER_WHITELIST).permitAll()
                 .antMatchers(HttpMethod.POST,"/api/login").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/token").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/logout").authenticated()
                 .antMatchers(HttpMethod.POST,"/api/usuario").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/usuario/roles").authenticated()
-                .antMatchers(HttpMethod.GET,"/api/licencias").hasAnyRole("SUPERVISOR")
-                .antMatchers(HttpMethod.GET,"/api/licencias/{id}").hasAnyRole("SUPERVISOR", "USUARIO") //si el rol es "USUARIO" se
+                .antMatchers(HttpMethod.GET,"/api/licencias/").hasAnyRole("SUPERVISOR", "USUARIO")
+                .antMatchers(HttpMethod.GET,"/api/licencias/{id}").hasAnyRole("SUPERVISOR", "USUARIO")*/ //si el rol es "USUARIO" se
                 // debe enviar solo sus licencias.
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

@@ -1,5 +1,6 @@
 package com.adviters.app.Bootcamp.Models;
 import com.adviters.app.Bootcamp.Models.Feriados.Feriado;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -106,8 +107,13 @@ public class Usuario {
     @Column
     private UUID supervisorId;
 
+    @Column
+    private boolean deleted;
+
     public Usuario() {
     }
 
-
+    public void setDeleted(boolean deleted) {
+            this.deleted = deleted;
+        }
 }
