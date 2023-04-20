@@ -1,5 +1,6 @@
 package com.adviters.app.Bootcamp.Models;
 import com.adviters.app.Bootcamp.Models.Feriados.Feriado;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

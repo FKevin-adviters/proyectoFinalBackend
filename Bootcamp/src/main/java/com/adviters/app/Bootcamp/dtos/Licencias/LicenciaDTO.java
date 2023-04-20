@@ -10,7 +10,6 @@ public class LicenciaDTO {
     private String status;
     private Date startDate;
     private Date endDate;
-
     private UsuarioDTO usuarioDTO;
 
     public UsuarioDTO getUsuarioDTO() {

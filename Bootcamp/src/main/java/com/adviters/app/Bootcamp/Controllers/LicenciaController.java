@@ -2,6 +2,7 @@ package com.adviters.app.Bootcamp.Controllers;
 
 import com.adviters.app.Bootcamp.Models.Licencias.Licencia;
 import com.adviters.app.Bootcamp.Models.Usuario;
+import com.adviters.app.Bootcamp.Repositories.LicenciaEstadoRepository;
 import com.adviters.app.Bootcamp.Repositories.LicenciaRepository;
 import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
 import com.adviters.app.Bootcamp.Services.LicenciaServices;
@@ -23,6 +24,8 @@ public class LicenciaController {
     @Autowired
     private LicenciaRepository licenciaRepository;
 
+    @Autowired
+    private LicenciaEstadoRepository licenciaEstadoRepository;
     @Autowired
     private LicenciaServices services;
 
@@ -71,6 +74,8 @@ public class LicenciaController {
                 Usuario usuario = usuarioRepository.findById(id).get();
                 if(usuario != null){
                     Licencia nuevaLicencia = licenciaRepository.save(licencia);
+                    if(licencia.getEstadoLicencia() == null) {
+                    }
                     nuevaLicencia.setUsuario(usuario);
                     licenciaRepository.save(nuevaLicencia);
                     return new ResponseEntity<>(nuevaLicencia, HttpStatus.CREATED);
