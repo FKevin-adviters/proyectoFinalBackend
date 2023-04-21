@@ -42,7 +42,6 @@ public class Licencia {
     private String description;
 
     @Column(updatable = false)
-    @NonNull
     @CreatedDate
     private Date createdDate;
 
@@ -63,7 +62,7 @@ public class Licencia {
     private TipoLicencia tipoLicencia;
 
     @ManyToOne
-    @JoinColumn(name = "license_state", referencedColumnName = "idState", columnDefinition = "int default 0")
+    @JoinColumn(name = "license_state", referencedColumnName = "idState")
     private EstadoLicencia estadoLicencia;
 
     @ManyToOne

@@ -51,9 +51,12 @@ public class UsuarioController {
         return new ResponseEntity<>(listDto, HttpStatus.OK);
     }
     @GetMapping(value = "/usuario/{id}")
-    public Usuario getUsuarioById(@PathVariable UUID id){
+    public ResponseEntity<?> getUsuarioById(@PathVariable UUID id) {
         Usuario user = usuarioRepository.findById(id).get();
-        return user;
+        if(user != null) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("El usuario no existe", HttpStatus.BAD_REQUEST);
     }
     @PostMapping(value = "/usuario")
     public ResponseEntity setUsuario(@RequestBody Usuario usuario){
