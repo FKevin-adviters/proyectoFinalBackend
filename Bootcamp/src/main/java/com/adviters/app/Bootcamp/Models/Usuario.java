@@ -37,7 +37,7 @@ public class Usuario {
 
     @Column
     @NonNull
-    private Integer phone;
+    private String phone;
 
     @Column(unique = true)
     @NonNull
@@ -49,11 +49,11 @@ public class Usuario {
 
     @Column
     @NonNull
-    private Long dni;
+    private String dni;
 
     @Column
     @NonNull
-    private Long cuil;
+    private String cuil;
 
     @Column
     private String street;
