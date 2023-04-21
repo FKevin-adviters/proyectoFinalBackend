@@ -44,9 +44,9 @@ public class LicenciaController {
                     if(historial != null) {
                         List<LicenciaDTO> newLicenciaDtos = licenciaDTOS.stream().filter(licenciaDTO -> {
                             if(historial) {
-                                return licenciaDTO.getStartDate().before(new Date());
+                                return licenciaDTO.getEndDate().before(new Date());
                             } else {
-                                return licenciaDTO.getStartDate().after(new Date());
+                                return licenciaDTO.getEndDate().after(new Date());
                             }}).collect(Collectors.toList());
                         return ResponseEntity.ok(newLicenciaDtos);
                     }
@@ -150,9 +150,9 @@ public class LicenciaController {
         if(historial != null) {
             List<LicenciaDTO> newLicenciaDtos = licenciaDTOS.stream().filter(licenciaDTO -> {
                 if (historial) {
-                    return licenciaDTO.getStartDate().before(new Date());
+                    return licenciaDTO.getEndDate().before(new Date());
                 } else {
-                    return licenciaDTO.getStartDate().after(new Date());
+                    return licenciaDTO.getEndDate().after(new Date());
                 }
             }).collect(Collectors.toList());
             return new ResponseEntity<>(newLicenciaDtos, HttpStatus.OK);
