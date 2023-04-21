@@ -4,6 +4,7 @@ import com.adviters.app.Bootcamp.Models.Feriados.Feriado;
 import com.adviters.app.Bootcamp.Repositories.FeriadoRepository;
 import com.adviters.app.Bootcamp.Repositories.UsuarioRepository;
 import com.adviters.app.Bootcamp.Services.FeriadoServices;
+import com.adviters.app.Bootcamp.dtos.FeriadoDTO.FeriadoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +33,14 @@ public class FeriadoController {
     }
 
     @GetMapping("/feriados")
-    public ResponseEntity<List<Feriado>> getAllFeriados() {
+    public ResponseEntity<List<FeriadoDTO>> getAllFeriados() {
         List<Feriado> feriados = feriadoServices.getAllFeriados();
-        return new ResponseEntity<>(feriados, HttpStatus.OK);
+        List<FeriadoDTO> feriadosSimples = new ArrayList<>();
+        for (Feriado feriado : feriados) {
+            FeriadoDTO feriadoSimple = new FeriadoDTO(feriado.getDate(), feriado.getDescription());
+            feriadosSimples.add(feriadoSimple);
+        }
+        return new ResponseEntity<>(feriadosSimples, HttpStatus.OK);
     }
 
     @PutMapping("/feriados/{id}")
